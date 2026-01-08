@@ -13,7 +13,7 @@ export default function Navbar() {
           <img
             src={logo}
             alt="DOUBLE H Logo"
-            className="h-30 w-auto object-contain"
+            className="h-35 w-auto object-contain"
           />
         </div>
 

@@ -4,7 +4,8 @@ import { FaFacebookF, FaInstagram, FaLinkedinIn } from "react-icons/fa";
 
 export default function Footer() {
   return (
-    <footer className="w-full bg-gradient-to-b from-[#143939] to-[#0d2424] text-white pt-16 pb-8 mt-20 relative">
+    // غير كلاس الـ footer في ملف الفوتر:
+<footer className="w-full bg-gradient-to-b from-[#143939] to-[#0d2424] text-white pt-16 pb-8 relative">
       <div className="max-w-7xl mx-auto px-6 md:px-12 grid grid-cols-1 md:grid-cols-4 gap-12">
         {/* Logo + Description */}
         <div className="flex flex-col items-start gap-6 -mt-16">
@@ -53,7 +54,6 @@ export default function Footer() {
             Contact
           </h3>
           <p className="text-gray-300 text-l">Email: double.h.bim@gmail.com</p>
-          
         </div>
 
         {/* Social Media */}

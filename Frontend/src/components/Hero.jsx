@@ -153,6 +153,7 @@ export default function Hero() {
 
               <span className="absolute inset-0 rounded-xl p-[2px] bg-gradient-to-r from-transparent via-[#143939] to-transparent animate-borderLoop"></span>
               <span className="absolute inset-[2px] bg-white rounded-xl"></span>
+              
             </motion.a>
           )}
         </div>
