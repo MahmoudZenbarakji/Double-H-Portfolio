@@ -8,9 +8,9 @@ const API_CONFIG = {
   },
   // Production
   production: {
-    baseURL: 'https://double-h-portfolio.vercel.app',
-    projects: 'https://double-h-portfolio.vercel.app/api/v1/projects',
-    partners: 'https://double-h-portfolio.vercel.app/api/v1/partners',
+    baseURL: 'https://double-h-portfolio-git-main-mahmouds-projects-a72a8653.vercel.app/',
+    projects: 'https://double-h-portfolio-git-main-mahmouds-projects-a72a8653.vercel.app/api/v1/projects',
+    partners: 'https://double-h-portfolio-git-main-mahmouds-projects-a72a8653.vercel.app//api/v1/partners',
     hero: 'https://double-h-portfolio.vercel.app/api/v1/hero',
   },
 };

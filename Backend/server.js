@@ -11,7 +11,7 @@ dotenv.config();
 const connectDB = require('./config/db');
 
 const corsOptions = {
-    origin: 'https://double-h-portfolio.vercel.app',
+    origin: 'https://double-h-portfolio-git-main-mahmouds-projects-a72a8653.vercel.app/',
     methods: ['GET', 'POST', 'PUT', 'DELETE'],
     allowedHeaders: ['Content-Type', 'Authorization'],
   };
