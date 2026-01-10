@@ -9,7 +9,7 @@ const getImageUrl = (imagePath) => {
   }
   
   // Otherwise, prepend the backend base URL
-  const backendUrl = import.meta.env.VITE_API_BASE_URL?.replace('/api/v1', '') || 'http://localhost:3000';
+  const backendUrl = import.meta.env.VITE_API_BASE_URL?.replace('/api/v1', '') || 'https://double-h-portfolio.vercel.app:3000';
   return `${backendUrl}${imagePath}`;
 };
 

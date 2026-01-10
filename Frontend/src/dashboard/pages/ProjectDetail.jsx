@@ -149,7 +149,7 @@ const ProjectDetail = () => {
             {selectedImage !== null && (
               <div className="main-image-container">
                 <img
-                  src={`http://localhost:3000${project.images[selectedImage]}`}
+                  src={`https://double-h-portfolio.vercel.app:3000${project.images[selectedImage]}`}
                   alt={`${project.name} - Image ${selectedImage + 1}`}
                   className="main-image"
                   onError={(e) => {
@@ -177,7 +177,7 @@ const ProjectDetail = () => {
                     onClick={() => setSelectedImage(index)}
                   >
                     <img
-                      src={`http://localhost:3000${image}`}
+                      src={`https://double-h-portfolio.vercel.app:3000${image}`}
                       alt={`Thumbnail ${index + 1}`}
                       onError={(e) => {
                         e.target.style.display = 'none';

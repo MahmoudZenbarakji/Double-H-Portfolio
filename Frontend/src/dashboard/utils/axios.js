@@ -3,7 +3,7 @@ import API_ENDPOINTS from '../config/api';
 
 // Create axios instance with default config
 const apiClient = axios.create({
-  baseURL: import.meta.env.VITE_API_BASE_URL || 'http://localhost:3000/api/v1',
+  baseURL: import.meta.env.VITE_API_BASE_URL || 'https://double-h-portfolio.vercel.app:3000/api/v1',
 });
 
 // Request interceptor to add auth token

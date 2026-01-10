@@ -35,7 +35,7 @@ const PartnerForm = () => {
         });
         if (partner.image) {
           setExistingImage(partner.image);
-          setImagePreview(`http://localhost:3000${partner.image}`);
+          setImagePreview(`https://double-h-portfolio.vercel.app:3000${partner.image}`);
         }
       }
     } catch (err) {
@@ -173,7 +173,7 @@ const PartnerForm = () => {
             <div className="image-preview-container">
               <div className="image-preview">
                 <img
-                  src={imagePreview || `http://localhost:3000${existingImage}`}
+                  src={imagePreview || `https://double-h-portfolio.vercel.app:3000${existingImage}`}
                   alt="Partner preview"
                   onError={(e) => {
                     e.target.style.display = 'none';

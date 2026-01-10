@@ -211,7 +211,7 @@ const ProjectForm = () => {
               {existingImages.map((image, index) => (
                 <div key={index} className="image-preview">
                   <img
-                    src={`http://localhost:3000${image}`}
+                    src={`https://localdouble-h-portfolio.vercel.apphost:3000${image}`}
                     alt={`Project ${index + 1}`}
                     onError={(e) => {
                       e.target.style.display = 'none';

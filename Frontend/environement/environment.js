@@ -2,9 +2,9 @@
 const API_CONFIG = {
   // Local development
   local: {
-    baseURL: 'http://localhost:3000',
-    projects: 'http://localhost:3000/api/v1/projects',
-    partners: 'http://localhost:3000/api/v1/partners',
+    baseURL: 'https://double-h-portfolio.vercel.app',
+    projects: 'https://double-h-portfolio.vercel.app/api/v1/projects',
+    partners: 'https://double-h-portfolio.vercel.app/api/v1/partners',
   },
   // Production
   production: {

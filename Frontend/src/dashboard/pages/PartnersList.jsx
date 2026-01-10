@@ -89,7 +89,7 @@ const PartnersList = () => {
               {partner.image && (
                 <div className="partner-image">
                   <img
-                    src={`http://localhost:3000${partner.image}`}
+                    src={`http://double-h-portfolio.vercel.app${partner.image}`}
                     alt={partner.name}
                     onError={(e) => {
                       e.target.style.display = 'none';
