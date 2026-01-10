@@ -20,6 +20,12 @@ export const API_ENDPOINTS = {
     update: (id) => `${API_BASE_URL}/partners/${id}`,
     delete: (id) => `${API_BASE_URL}/partners/${id}`,
   },
+  hero: {
+    getAll: `${API_BASE_URL}/hero`,
+    create: `${API_BASE_URL}/hero`,
+    update: (id) => `${API_BASE_URL}/hero/${id}`,
+    delete: (id) => `${API_BASE_URL}/hero/${id}`,
+  },
 };
 
 export default API_ENDPOINTS;
