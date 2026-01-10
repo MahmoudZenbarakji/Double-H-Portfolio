@@ -1,44 +1,48 @@
-// src/App.jsx
-import Navbar from "./components/Navbar";
-import Hero from "./components/Hero";
-import PartnersSlider from "./components/PartnersSlider";
-import CreativeShowcase from "./components/CreativeShowcase"; // Welcome Section
-import ServicesSection from "./components/ServicesSection";   // ✅ Services Section
-import ProjectsSection from "./components/ProjectsSection";   // ✅ Projects Section
-import Footer from "./components/Footer";                     // ✅ Footer Section
+import { BrowserRouter as Router, Routes, Route, Navigate } from 'react-router-dom';
+import Portfolio from './components/Portfolio';
+import Login from './dashboard/pages/Login';
+import DashboardLayout from './dashboard/components/DashboardLayout';
+import DashboardHome from './dashboard/pages/DashboardHome';
+import ProjectsList from './dashboard/pages/ProjectsList';
+import ProjectForm from './dashboard/pages/ProjectForm';
+import ProjectDetail from './dashboard/pages/ProjectDetail';
+import PartnersList from './dashboard/pages/PartnersList';
+import PartnerForm from './dashboard/pages/PartnerForm';
+import ProtectedRoute from './dashboard/components/ProtectedRoute';
 
 function App() {
   return (
-    <div className="App">
-      {/* Navbar */}
-      <Navbar />
-
-      {/* Hero Section */}
-      <section id="hero">
-        <Hero />
-      </section>
-
-      {/* Partners Slider Section */}
-      <PartnersSlider />
-
-      {/* Welcome Section */}
-      <section id="creative-showcase">
-        <CreativeShowcase />
-      </section>
-
-      {/* Services Section */}
-      <section id="services">
-        <ServicesSection />
-      </section>
-
-      {/* Projects Section */}
-      <section id="projects">
-        <ProjectsSection />
-      </section>
-
-      {/* ✅ Footer Section */}
-      <Footer />
-    </div>
+    <Router>
+      <Routes>
+        {/* Public Portfolio Site */}
+        <Route path="/" element={<Portfolio />} />
+        
+        {/* Dashboard Login */}
+        <Route path="/login" element={<Login />} />
+        
+        {/* Dashboard Routes (Protected) */}
+        <Route
+          path="/dashboard"
+          element={
+            <ProtectedRoute>
+              <DashboardLayout />
+            </ProtectedRoute>
+          }
+        >
+          <Route index element={<DashboardHome />} />
+          <Route path="projects" element={<ProjectsList />} />
+          <Route path="projects/new" element={<ProjectForm />} />
+          <Route path="projects/view/:id" element={<ProjectDetail />} />
+          <Route path="projects/edit/:id" element={<ProjectForm />} />
+          <Route path="partners" element={<PartnersList />} />
+          <Route path="partners/new" element={<PartnerForm />} />
+          <Route path="partners/edit/:id" element={<PartnerForm />} />
+        </Route>
+        
+        {/* Catch all - redirect to home */}
+        <Route path="*" element={<Navigate to="/" replace />} />
+      </Routes>
+    </Router>
   );
 }
 

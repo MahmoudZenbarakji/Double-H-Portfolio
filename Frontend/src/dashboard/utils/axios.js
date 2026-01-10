@@ -30,7 +30,7 @@ apiClient.interceptors.response.use(
       localStorage.removeItem('isAuthenticated');
       localStorage.removeItem('username');
       localStorage.removeItem('userId');
-      window.location.href = '/';
+      window.location.href = '/login';
     }
     return Promise.reject(error);
   }

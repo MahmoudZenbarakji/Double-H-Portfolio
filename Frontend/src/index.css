@@ -1,4 +1,16 @@
 @import "tailwindcss";
+
+/* Global App Styles */
+* {
+  box-sizing: border-box;
+}
+
+#root {
+  width: 100%;
+  min-height: 100vh;
+}
+
+/* Portfolio Animations */
 @keyframes borderLoop {
     0% {
         background-position: 0% 50%;
@@ -11,11 +23,7 @@
 .animate-borderLoop {
     background-size: 200% 200%;
     animation: borderLoop 4s linear infinite;
-    /* سرعة أبطأ وواضحة */
 }
-
-
-/* ------------------ */
 
 @keyframes bookOpenRight {
     from {

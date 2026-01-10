@@ -2,6 +2,7 @@ import { useState, useEffect } from 'react';
 import { Link } from 'react-router-dom';
 import axios from 'axios';
 import API_ENDPOINTS from '../config/api';
+import getImageUrl from '../utils/imageUrl';
 import './ProjectsList.css';
 
 const ProjectsList = () => {
@@ -86,7 +87,7 @@ const ProjectsList = () => {
               {project.images && project.images.length > 0 && (
                 <div className="project-image">
                   <img
-                    src={`http://localhost:3000${project.images[0]}`}
+                    src={getImageUrl(project.images[0])}
                     alt={project.name}
                     onError={(e) => {
                       e.target.style.display = 'none';

@@ -1,127 +1,59 @@
 import React, { useState, useEffect } from "react";
-
-const projects = [
-  {
-    id: 1,
-    name: "DOUBLE H Residence",
-    location: "Bozeman, MT",
-    image: "/src/assets/images/im1.jpg",
-    facebookUrl: "#",
-    gallery: [
-      "/src/assets/images/im1.jpg",
-      "/src/assets/images/im2.jpg",
-      "/src/assets/images/im3.jpg",
-      "/src/assets/images/im1.jpg",
-    ],
-  },
-  {
-    id: 2,
-    name: "Green Axis Complex",
-    location: "Churchill, MT",
-    image: "/src/assets/images/im2.jpg",
-    facebookUrl: "#",
-    gallery: [
-      "/src/assets/images/im2.jpg",
-      "/src/assets/images/im1.jpg",
-      "/src/assets/images/im3.jpg",
-      "/src/assets/images/im2.jpg",
-    ],
-  },
-  {
-    id: 3,
-    name: "Sustainable Pavilion",
-    location: "Helena, MT",
-    image: "/src/assets/images/im3.jpg",
-    facebookUrl: "#",
-    gallery: [
-      "/src/assets/images/im3.jpg",
-      "/src/assets/images/im2.jpg",
-      "/src/assets/images/im1.jpg",
-      "/src/assets/images/im3.jpg",
-    ],
-  },
-  {
-    id: 4,
-    name: "Urban Loft",
-    location: "Damascus, SY",
-    image: "/src/assets/images/im1.jpg",
-    facebookUrl: "#",
-    gallery: [
-      "/src/assets/images/im1.jpg",
-      "/src/assets/images/im2.jpg",
-      "/src/assets/images/im3.jpg",
-    ],
-  },
-  {
-    id: 5,
-    name: "Eco Tower",
-    location: "Dubai, UAE",
-    image: "/src/assets/images/im2.jpg",
-    facebookUrl: "#",
-    gallery: ["/src/assets/images/im2.jpg", "/src/assets/images/im1.jpg"],
-  },
-  {
-    id: 6,
-    name: "Skyline Villa",
-    location: "Beirut, LB",
-    image: "/src/assets/images/im3.jpg",
-    facebookUrl: "#",
-    gallery: ["/src/assets/images/im3.jpg", "/src/assets/images/im2.jpg"],
-  },
-  {
-    id: 7,
-    name: "Glass House",
-    location: "London, UK",
-    image: "/src/assets/images/im1.jpg",
-    facebookUrl: "#",
-    gallery: ["/src/assets/images/im1.jpg", "/src/assets/images/im2.jpg"],
-  },
-  {
-    id: 8,
-    name: "Mountain Retreat",
-    location: "Zurich, CH",
-    image: "/src/assets/images/im2.jpg",
-    facebookUrl: "#",
-    gallery: ["/src/assets/images/im2.jpg", "/src/assets/images/im3.jpg"],
-  },
-  {
-    id: 9,
-    name: "Sea View Tower",
-    location: "Athens, GR",
-    image: "/src/assets/images/im3.jpg",
-    facebookUrl: "#",
-    gallery: ["/src/assets/images/im3.jpg", "/src/assets/images/im1.jpg"],
-  },
-  {
-    id: 10,
-    name: "Desert Oasis",
-    location: "Riyadh, KSA",
-    image: "/src/assets/images/im1.jpg",
-    facebookUrl: "#",
-    gallery: ["/src/assets/images/im1.jpg", "/src/assets/images/im2.jpg"],
-  },
-  {
-    id: 11,
-    name: "Nordic Cabin",
-    location: "Oslo, NO",
-    image: "/src/assets/images/im2.jpg",
-    facebookUrl: "#",
-    gallery: ["/src/assets/images/im2.jpg", "/src/assets/images/im3.jpg"],
-  },
-  {
-    id: 12,
-    name: "Zen Garden Hub",
-    location: "Kyoto, JP",
-    image: "/src/assets/images/im3.jpg",
-    facebookUrl: "#",
-    gallery: ["/src/assets/images/im3.jpg", "/src/assets/images/im1.jpg"],
-  },
-];
+import { API_PROJECTS, API_BASE_URL } from "../../environement/environment";
 
 const ProjectsSection = () => {
+  const [projects, setProjects] = useState([]);
+  const [loading, setLoading] = useState(true);
+  const [error, setError] = useState(null);
   const [current, setCurrent] = useState(0);
   const [itemsInView, setItemsInView] = useState(3);
   const [selectedProject, setSelectedProject] = useState(null);
+
+  // Fetch projects from API
+  useEffect(() => {
+    const fetchProjects = async () => {
+      try {
+        setLoading(true);
+        const response = await fetch(API_PROJECTS);
+        
+        if (!response.ok) {
+          throw new Error('Failed to fetch projects');
+        }
+        
+        const result = await response.json();
+        
+        if (result.success && result.data) {
+          // Map API response to component format
+          const mappedProjects = result.data.map((project) => ({
+            id: project._id,
+            name: project.name,
+            location: project.description || "Location not specified",
+            image: project.images && project.images.length > 0 
+              ? `${API_BASE_URL}${project.images[0]}` 
+              : "/src/assets/images/im1.jpg",
+            facebookUrl: project.link || "#",
+            gallery: project.images && project.images.length > 0
+              ? project.images.map(img => `${API_BASE_URL}${img}`)
+              : ["/src/assets/images/im1.jpg"],
+            description: project.description,
+            date: project.date,
+          }));
+          
+          setProjects(mappedProjects);
+        } else {
+          setProjects([]);
+        }
+      } catch (err) {
+        console.error('Error fetching projects:', err);
+        setError(err.message);
+        setProjects([]);
+      } finally {
+        setLoading(false);
+      }
+    };
+
+    fetchProjects();
+  }, []);
 
   useEffect(() => {
     const handleResize = () => {
@@ -143,6 +75,50 @@ const ProjectsSection = () => {
     setCurrent((prev) => (prev >= maxIndex ? 0 : prev + 1));
   const prevSlide = () =>
     setCurrent((prev) => (prev <= 0 ? maxIndex : prev - 1));
+
+  // Loading state
+  if (loading) {
+    return (
+      <section
+        id="projects"
+        className="relative w-full min-h-screen bg-[#f8fafc] flex flex-col items-center justify-center py-12 m-0 border-none"
+      >
+        <div className="text-center">
+          <div className="inline-block animate-spin rounded-full h-12 w-12 border-b-2 border-green-600"></div>
+          <p className="mt-4 text-gray-600">Loading projects...</p>
+        </div>
+      </section>
+    );
+  }
+
+  // Error state
+  if (error) {
+    return (
+      <section
+        id="projects"
+        className="relative w-full min-h-screen bg-[#f8fafc] flex flex-col items-center justify-center py-12 m-0 border-none"
+      >
+        <div className="text-center">
+          <p className="text-red-600">Error: {error}</p>
+          <p className="mt-2 text-gray-600">Please try again later.</p>
+        </div>
+      </section>
+    );
+  }
+
+  // No projects state
+  if (projects.length === 0) {
+    return (
+      <section
+        id="projects"
+        className="relative w-full min-h-screen bg-[#f8fafc] flex flex-col items-center justify-center py-12 m-0 border-none"
+      >
+        <div className="text-center">
+          <p className="text-gray-600">No projects available at the moment.</p>
+        </div>
+      </section>
+    );
+  }
 
   return (
     <section
@@ -287,9 +263,7 @@ const ProjectsSection = () => {
                 </div>
                 <div className="h-1 w-12 bg-green-600 my-6 rounded-full" />
                 <p className="text-gray-500 leading-relaxed text-sm">
-                  We focus on creating spaces that are both functional and
-                  inspiring. Each project is a unique journey of design and
-                  innovation.
+                  {selectedProject.description || "We focus on creating spaces that are both functional and inspiring. Each project is a unique journey of design and innovation."}
                 </p>
               </div>
               <div className="mt-8">

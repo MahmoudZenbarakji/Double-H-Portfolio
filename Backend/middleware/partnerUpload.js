@@ -1,9 +1,16 @@
 const multer = require('multer');
 const path = require('path');
+const fs = require('fs');
+
+// Ensure the partners upload directory exists
+const uploadDir = 'uploads/partners';
+if (!fs.existsSync(uploadDir)) {
+    fs.mkdirSync(uploadDir, { recursive: true });
+}
 
 const storage = multer.diskStorage({
     destination: (req, file, cb) => {
-        cb(null, 'uploads/projects');
+        cb(null, uploadDir);
     },
     filename: (req, file, cb) => {
         cb(
@@ -26,11 +33,11 @@ const fileFilter = (req, file, cb) => {
     }
 };
 
-const uploadProjectImages = multer({
+const uploadPartnerImage = multer({
     storage,
     fileFilter,
     limits: { fileSize: 5 * 1024 * 1024 }, // 5MB
 });
 
-module.exports = uploadProjectImages;
+module.exports = uploadPartnerImage;
 
