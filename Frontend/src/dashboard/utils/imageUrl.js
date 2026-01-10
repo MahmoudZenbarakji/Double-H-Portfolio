@@ -8,8 +8,13 @@ const getImageUrl = (imagePath) => {
     return imagePath;
   }
   
-  // Otherwise, prepend the backend base URL
-  const backendUrl = import.meta.env.VITE_API_BASE_URL?.replace('/api/v1', '') || 'https://double-h-portfolio.vercel.app:3000';
+  // Get backend base URL (without /api/v1)
+  const API_BASE_URL = import.meta.env.VITE_API_BASE_URL || 
+    (import.meta.env.DEV 
+      ? 'http://localhost:3000/api/v1' 
+      : 'https://double-h-portfolio.vercel.app/api/v1');
+  
+  const backendUrl = API_BASE_URL.replace('/api/v1', '');
   return `${backendUrl}${imagePath}`;
 };
 

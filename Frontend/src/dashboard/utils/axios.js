@@ -1,9 +1,19 @@
 import axios from 'axios';
 import API_ENDPOINTS from '../config/api';
 
+// Get API base URL from environment variable
+const API_BASE_URL = import.meta.env.VITE_API_BASE_URL || 
+  (import.meta.env.DEV 
+    ? 'http://localhost:3000/api/v1' 
+    : 'https://double-h-portfolio.vercel.app/api/v1');
+
 // Create axios instance with default config
 const apiClient = axios.create({
-  baseURL: import.meta.env.VITE_API_BASE_URL || 'https://double-h-portfolio.vercel.app:3000/api/v1',
+  baseURL: API_BASE_URL,
+  timeout: 30000, // 30 second timeout
+  headers: {
+    'Content-Type': 'application/json',
+  },
 });
 
 // Request interceptor to add auth token

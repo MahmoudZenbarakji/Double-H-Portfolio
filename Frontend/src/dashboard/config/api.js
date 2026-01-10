@@ -1,5 +1,11 @@
 // API Configuration
-const API_BASE_URL = import.meta.env.VITE_API_BASE_URL || 'https://double-h-portfolio.vercel.app/api/v1';
+// Use environment variable for API base URL
+// In production: https://double-h-portfolio.vercel.app
+// In development: http://localhost:3000
+const API_BASE_URL = import.meta.env.VITE_API_BASE_URL || 
+  (import.meta.env.DEV 
+    ? 'http://localhost:3000/api/v1' 
+    : 'https://double-h-portfolio.vercel.app/api/v1');
 
 export const API_ENDPOINTS = {
   auth: {
