@@ -66,12 +66,12 @@ app.get('/', (req, res) => {
 connectDB();
 
 // Start server only if not in Vercel serverless environment
-if (process.env.VERCEL !== '1') {
-    const port = process.env.PORT || 3000;
-    app.listen(port, () => {
-        console.log(`Server is running on http://localhost:${port}`);
-    });
-}
+// if (process.env.VERCEL !== '1') {
+//     const port = process.env.PORT || 3000;
+//     app.listen(port, () => {
+//         console.log(`Server is running on http://localhost:${port}`);
+//     });
+// }
 
 // Export app for Vercel serverless
 module.exports = app;
