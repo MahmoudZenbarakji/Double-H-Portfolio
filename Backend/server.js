@@ -3,21 +3,20 @@ const app = express();
 const cors = require('cors');
 const mongoose = require('mongoose');
 const dotenv = require('dotenv');
-const authRoutes = require('./Routes/auth.route');
+
 dotenv.config();
 
 // -------------------------
 // Serverless-safe MongoDB connection
 // -------------------------
 let isConnected = false;
-
 const connectDB = async () => {
   if (isConnected) return;
   if (!process.env.MONGO_URI) throw new Error("MONGO_URI not set!");
-
-  // ✅ Remove unsupported options
-  await mongoose.connect(process.env.MONGO_URI);
-
+  await mongoose.connect(process.env.MONGO_URI, {
+    useNewUrlParser: true,
+    useUnifiedTopology: true
+  });
   isConnected = true;
   console.log("MongoDB connected");
 };
@@ -27,7 +26,7 @@ const connectDB = async () => {
 // -------------------------
 const allowedOrigins = [
   "http://localhost:5173",
-  "https://double-h-portfolio-tvgh.vercel.app",
+  "https://double-h-portfolio-tvgh.vercel.app"
 ];
 
 app.use(cors({
@@ -104,7 +103,7 @@ app.get('/api/v1/partners', async (req, res) => {
     res.status(500).json({ message: "Server error", error: err.message });
   }
 });
-app.use('/api/v1/auth', authRoutes);
+
 // -------------------------
 // Hero route
 // -------------------------
