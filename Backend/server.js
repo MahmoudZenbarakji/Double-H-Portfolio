@@ -3,7 +3,7 @@ const app = express();
 const cors = require('cors');
 const mongoose = require('mongoose');
 const dotenv = require('dotenv');
-
+const authRoutes = require('./Routes/auth.route'); // make sure this exists
 dotenv.config();
 
 // -------------------------
@@ -13,16 +13,13 @@ let isConnected = false;
 const connectDB = async () => {
   if (isConnected) return;
   if (!process.env.MONGO_URI) throw new Error("MONGO_URI not set!");
-  await mongoose.connect(process.env.MONGO_URI, {
-    useNewUrlParser: true,
-    useUnifiedTopology: true
-  });
+  await mongoose.connect(process.env.MONGO_URI); // no options
   isConnected = true;
   console.log("MongoDB connected");
 };
 
 // -------------------------
-// CORS - allow frontend
+// CORS
 // -------------------------
 const allowedOrigins = [
   "http://localhost:5173",
@@ -44,7 +41,7 @@ app.use(cors({
 app.use(express.json());
 
 // -------------------------
-// Logging middleware
+// Logging
 // -------------------------
 app.use((req, res, next) => {
   console.log("Incoming request:", req.method, req.url);
@@ -52,8 +49,10 @@ app.use((req, res, next) => {
 });
 
 // -------------------------
-// Health check
+// Routes
 // -------------------------
+app.use('/api/v1/auth', authRoutes); // add auth routes
+
 app.get('/api/v1/health', async (req, res) => {
   try {
     await connectDB();
@@ -64,18 +63,13 @@ app.get('/api/v1/health', async (req, res) => {
   }
 });
 
-// -------------------------
-// Projects route
-// -------------------------
 app.get('/api/v1/projects', async (req, res) => {
   try {
     await connectDB();
-
     const Project = mongoose.models.Project || mongoose.model("Project", new mongoose.Schema({
       title: String,
       description: String
     }));
-
     const projects = await Project.find();
     res.json(projects);
   } catch (err) {
@@ -84,18 +78,13 @@ app.get('/api/v1/projects', async (req, res) => {
   }
 });
 
-// -------------------------
-// Partners route
-// -------------------------
 app.get('/api/v1/partners', async (req, res) => {
   try {
     await connectDB();
-
     const Partner = mongoose.models.Partner || mongoose.model("Partner", new mongoose.Schema({
       name: String,
       link: String
     }));
-
     const partners = await Partner.find();
     res.json(partners);
   } catch (err) {
@@ -104,18 +93,13 @@ app.get('/api/v1/partners', async (req, res) => {
   }
 });
 
-// -------------------------
-// Hero route
-// -------------------------
 app.get('/api/v1/hero', async (req, res) => {
   try {
     await connectDB();
-
     const Hero = mongoose.models.Hero || mongoose.model("Hero", new mongoose.Schema({
       title: String,
       image: String
     }));
-
     const hero = await Hero.find();
     res.json(hero);
   } catch (err) {
