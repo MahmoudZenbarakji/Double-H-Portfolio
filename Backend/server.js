@@ -27,7 +27,9 @@ const connectDB = async () => {
 // -------------------------
 const allowedOrigins = [
   "http://localhost:5173",
-  "https://double-h-portfolio-tvgh.vercel.app"
+  "https://double-h-portfolio-tvgh.vercel.app",
+  "https://double-h-portfolio.vercel.app/api/v1/auth/login"
+
 ];
 
 app.use(cors({
