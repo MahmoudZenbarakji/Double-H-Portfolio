@@ -1,6 +1,6 @@
 import { useState, useEffect } from 'react';
 import { Link } from 'react-router-dom';
-import axios from 'axios';
+import apiClient from '../utils/axios';
 import API_ENDPOINTS from '../config/api';
 import getImageUrl from '../utils/imageUrl';
 import './ProjectsList.css';
@@ -17,7 +17,7 @@ const ProjectsList = () => {
   const fetchProjects = async () => {
     try {
       setLoading(true);
-      const response = await axios.get(API_ENDPOINTS.projects.getAll);
+      const response = await apiClient.get(API_ENDPOINTS.projects.getAll);
       if (response.data.success) {
         setProjects(response.data.data);
       }
@@ -35,7 +35,7 @@ const ProjectsList = () => {
     }
 
     try {
-      await axios.delete(API_ENDPOINTS.projects.delete(id));
+      await apiClient.delete(API_ENDPOINTS.projects.delete(id));
       fetchProjects();
     } catch (err) {
       alert('Failed to delete project');

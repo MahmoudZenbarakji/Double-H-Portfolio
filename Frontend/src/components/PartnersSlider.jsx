@@ -1,7 +1,8 @@
 // src/components/PartnersSlider.jsx
 import { useState, useEffect } from "react";
 import { motion, AnimatePresence } from "framer-motion";
-import { API_PARTNERS, API_BASE_URL } from "../../environement/environment";
+import { API_PARTNERS } from "../../environement/environment";
+import getImageUrl from "../dashboard/utils/imageUrl";
 import logo1 from "../assets/images/logo1.png";
 import logo2 from "../assets/images/logo2.png";
 import logo3 from "../assets/images/logo3.png";
@@ -37,7 +38,7 @@ export default function PartnersSlider() {
             id: partner._id,
             name: partner.name,
             image: partner.image 
-              ? `${API_BASE_URL}${partner.image}` 
+              ? getImageUrl(partner.image)
               : fallbackLogos[0],
           }));
           

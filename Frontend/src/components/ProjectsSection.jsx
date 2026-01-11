@@ -1,5 +1,6 @@
 import React, { useState, useEffect } from "react";
-import { API_PROJECTS, API_BASE_URL } from "../../environement/environment";
+import { API_PROJECTS, BACKEND_BASE_URL } from "../../environement/environment";
+import getImageUrl from "../dashboard/utils/imageUrl";
 
 const ProjectsSection = () => {
   const [projects, setProjects] = useState([]);
@@ -54,11 +55,11 @@ const ProjectsSection = () => {
             name: project.name,
             location: project.description || "Location not specified",
             image: project.images && project.images.length > 0 
-              ? `${API_BASE_URL}${project.images[0]}` 
+              ? getImageUrl(project.images[0])
               : "/src/assets/images/im1.jpg",
             facebookUrl: project.link || "#",
             gallery: project.images && project.images.length > 0
-              ? project.images.map(img => `${API_BASE_URL}${img}`)
+              ? project.images.map(img => getImageUrl(img))
               : ["/src/assets/images/im1.jpg"],
             description: project.description,
             date: project.date,

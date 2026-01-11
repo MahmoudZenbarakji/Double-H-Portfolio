@@ -2,12 +2,30 @@ import axios from 'axios';
 import API_ENDPOINTS from '../config/api';
 
 // Get API base URL from environment variable
-const API_BASE_URL = import.meta.env.VITE_API_BASE_URL || 
-  (import.meta.env.DEV 
+// VITE_API_BASE_URL MUST include /api/v1
+const getApiBaseUrl = () => {
+  const envUrl = import.meta.env.VITE_API_BASE_URL;
+  if (envUrl) {
+    // Ensure it includes /api/v1
+    if (envUrl.endsWith('/api/v1')) {
+      return envUrl;
+    }
+    // If it doesn't end with /api/v1, add it
+    return envUrl.endsWith('/') 
+      ? `${envUrl}api/v1` 
+      : `${envUrl}/api/v1`;
+  }
+  // Fallback based on environment
+  return import.meta.env.DEV 
     ? 'http://localhost:3000/api/v1' 
-    : 'https://double-h-portfolio.vercel.app/api/v1');
+    : 'https://double-h-portfolio.vercel.app/api/v1';
+};
+
+const API_BASE_URL = getApiBaseUrl();
 
 // Create axios instance with default config
+// Note: API_ENDPOINTS already includes full URLs, so baseURL is optional
+// but kept for consistency and direct apiClient usage
 const apiClient = axios.create({
   baseURL: API_BASE_URL,
   timeout: 30000, // 30 second timeout

@@ -1,7 +1,8 @@
 import { useState, useEffect } from 'react';
 import { Link } from 'react-router-dom';
-import axios from 'axios';
+import apiClient from '../utils/axios';
 import API_ENDPOINTS from '../config/api';
+import getImageUrl from '../utils/imageUrl';
 import './PartnersList.css';
 
 const PartnersList = () => {
@@ -16,7 +17,7 @@ const PartnersList = () => {
   const fetchPartners = async () => {
     try {
       setLoading(true);
-      const response = await axios.get(API_ENDPOINTS.partners.getAll);
+      const response = await apiClient.get(API_ENDPOINTS.partners.getAll);
       if (response.data.success) {
         setPartners(response.data.data);
       }
@@ -34,7 +35,7 @@ const PartnersList = () => {
     }
 
     try {
-      await axios.delete(API_ENDPOINTS.partners.delete(id));
+      await apiClient.delete(API_ENDPOINTS.partners.delete(id));
       fetchPartners();
     } catch (err) {
       alert('Failed to delete partner');
@@ -89,7 +90,7 @@ const PartnersList = () => {
               {partner.image && (
                 <div className="partner-image">
                   <img
-                    src={`http://double-h-portfolio.vercel.app${partner.image}`}
+                    src={getImageUrl(partner.image)}
                     alt={partner.name}
                     onError={(e) => {
                       e.target.style.display = 'none';

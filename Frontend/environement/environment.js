@@ -1,29 +1,47 @@
 // API Configuration
-// Use environment variable for API base URL
+// VITE_API_BASE_URL MUST include /api/v1
+// Production: https://double-h-portfolio.vercel.app/api/v1
+// Development: http://localhost:3000/api/v1
+
 const getApiBaseUrl = () => {
   const envUrl = import.meta.env.VITE_API_BASE_URL;
   if (envUrl) {
-    // Remove /api/v1 if present to get base URL
-    return envUrl.replace('/api/v1', '');
+    // Ensure it includes /api/v1
+    if (envUrl.endsWith('/api/v1')) {
+      return envUrl;
+    }
+    // If it doesn't end with /api/v1, add it
+    return envUrl.endsWith('/') 
+      ? `${envUrl}api/v1` 
+      : `${envUrl}/api/v1`;
   }
   // Fallback based on environment
   return import.meta.env.DEV 
-    ? 'http://localhost:3000' 
-    : 'https://double-h-portfolio.vercel.app';
+    ? 'http://localhost:3000/api/v1' 
+    : 'https://double-h-portfolio.vercel.app/api/v1';
 };
 
+// API base URL (includes /api/v1)
 const API_BASE_URL = getApiBaseUrl();
 
-// API endpoints
-export const API_PROJECTS = `${API_BASE_URL}/api/v1/projects`;
-export const API_PARTNERS = `${API_BASE_URL}/api/v1/partners`;
-export const API_HERO = `${API_BASE_URL}/api/v1/hero`;
+// Backend base URL (without /api/v1) - for images served from /uploads
+const getBackendBaseUrl = () => {
+  return API_BASE_URL.replace('/api/v1', '');
+};
 
-// Export API base URL
-export { API_BASE_URL };
+const BACKEND_BASE_URL = getBackendBaseUrl();
+
+// API endpoints
+export const API_PROJECTS = `${API_BASE_URL}/projects`;
+export const API_PARTNERS = `${API_BASE_URL}/partners`;
+export const API_HERO = `${API_BASE_URL}/hero`;
+
+// Export URLs
+export { API_BASE_URL, BACKEND_BASE_URL };
 
 export default {
   API_BASE_URL,
+  BACKEND_BASE_URL,
   API_PROJECTS,
   API_PARTNERS,
   API_HERO,

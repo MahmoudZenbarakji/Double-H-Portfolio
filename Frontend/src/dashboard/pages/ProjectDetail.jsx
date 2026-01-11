@@ -1,7 +1,8 @@
 import { useState, useEffect } from 'react';
 import { useParams, useNavigate, Link } from 'react-router-dom';
-import axios from 'axios';
+import apiClient from '../utils/axios';
 import API_ENDPOINTS from '../config/api';
+import getImageUrl from '../utils/imageUrl';
 import './ProjectDetail.css';
 
 const ProjectDetail = () => {
@@ -19,7 +20,7 @@ const ProjectDetail = () => {
   const fetchProject = async () => {
     try {
       setLoading(true);
-      const response = await axios.get(API_ENDPOINTS.projects.getById(id));
+      const response = await apiClient.get(API_ENDPOINTS.projects.getById(id));
       if (response.data.success) {
         setProject(response.data.data);
         if (response.data.data.images && response.data.data.images.length > 0) {
@@ -40,7 +41,7 @@ const ProjectDetail = () => {
     }
 
     try {
-      await axios.delete(API_ENDPOINTS.projects.delete(id));
+      await apiClient.delete(API_ENDPOINTS.projects.delete(id));
       navigate('/dashboard/projects');
     } catch (err) {
       alert('Failed to delete project');
@@ -149,7 +150,7 @@ const ProjectDetail = () => {
             {selectedImage !== null && (
               <div className="main-image-container">
                 <img
-                  src={`https://double-h-portfolio.vercel.app:3000${project.images[selectedImage]}`}
+                  src={getImageUrl(project.images[selectedImage])}
                   alt={`${project.name} - Image ${selectedImage + 1}`}
                   className="main-image"
                   onError={(e) => {
@@ -177,7 +178,7 @@ const ProjectDetail = () => {
                     onClick={() => setSelectedImage(index)}
                   >
                     <img
-                      src={`https://double-h-portfolio.vercel.app:3000${image}`}
+                      src={getImageUrl(image)}
                       alt={`Thumbnail ${index + 1}`}
                       onError={(e) => {
                         e.target.style.display = 'none';

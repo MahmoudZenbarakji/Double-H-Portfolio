@@ -1,7 +1,8 @@
 import { useState, useEffect } from 'react';
 import { useNavigate, useParams } from 'react-router-dom';
-import axios from 'axios';
+import apiClient from '../utils/axios';
 import API_ENDPOINTS from '../config/api';
+import getImageUrl from '../utils/imageUrl';
 import './PartnerForm.css';
 
 const PartnerForm = () => {
@@ -27,7 +28,7 @@ const PartnerForm = () => {
   const fetchPartner = async () => {
     try {
       setLoading(true);
-      const response = await axios.get(API_ENDPOINTS.partners.getById(id));
+      const response = await apiClient.get(API_ENDPOINTS.partners.getById(id));
       if (response.data.success) {
         const partner = response.data.data;
         setFormData({
@@ -35,7 +36,7 @@ const PartnerForm = () => {
         });
         if (partner.image) {
           setExistingImage(partner.image);
-          setImagePreview(`https://double-h-portfolio.vercel.app:3000${partner.image}`);
+          setImagePreview(getImageUrl(partner.image));
         }
       }
     } catch (err) {
@@ -81,14 +82,14 @@ const PartnerForm = () => {
         if (image) {
           // If new image is uploaded, include it
           formDataToSend.append('image', image);
-          await axios.put(API_ENDPOINTS.partners.update(id), formDataToSend, {
+          await apiClient.put(API_ENDPOINTS.partners.update(id), formDataToSend, {
             headers: {
               'Content-Type': 'multipart/form-data',
             },
           });
         } else {
           // If no new image, just update the name
-          await axios.put(API_ENDPOINTS.partners.update(id), {
+          await apiClient.put(API_ENDPOINTS.partners.update(id), {
             name: formData.name,
           });
         }
@@ -100,7 +101,7 @@ const PartnerForm = () => {
           return;
         }
         formDataToSend.append('image', image);
-        await axios.post(API_ENDPOINTS.partners.create, formDataToSend, {
+        await apiClient.post(API_ENDPOINTS.partners.create, formDataToSend, {
           headers: {
             'Content-Type': 'multipart/form-data',
           },
@@ -173,7 +174,7 @@ const PartnerForm = () => {
             <div className="image-preview-container">
               <div className="image-preview">
                 <img
-                  src={imagePreview || `https://double-h-portfolio.vercel.app:3000${existingImage}`}
+                  src={imagePreview || getImageUrl(existingImage)}
                   alt="Partner preview"
                   onError={(e) => {
                     e.target.style.display = 'none';

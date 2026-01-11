@@ -1,7 +1,8 @@
 import { useState, useEffect } from 'react';
 import { useNavigate, useParams } from 'react-router-dom';
-import axios from 'axios';
+import apiClient from '../utils/axios';
 import API_ENDPOINTS from '../config/api';
+import getImageUrl from '../utils/imageUrl';
 import './ProjectForm.css';
 
 const ProjectForm = () => {
@@ -29,7 +30,7 @@ const ProjectForm = () => {
   const fetchProject = async () => {
     try {
       setLoading(true);
-      const response = await axios.get(API_ENDPOINTS.projects.getById(id));
+      const response = await apiClient.get(API_ENDPOINTS.projects.getById(id));
       if (response.data.success) {
         const project = response.data.data;
         setFormData({
@@ -88,7 +89,7 @@ const ProjectForm = () => {
       if (isEdit) {
         // Update project - note: backend update route doesn't handle file uploads
         // You may need to add upload middleware to the update route for image updates
-        await axios.put(API_ENDPOINTS.projects.update(id), {
+        await apiClient.put(API_ENDPOINTS.projects.update(id), {
           name: formData.name,
           description: formData.description,
           date: formData.date || undefined,
@@ -96,7 +97,7 @@ const ProjectForm = () => {
         });
         // TODO: If you need to update images, add file upload support to the backend update route
       } else {
-        await axios.post(API_ENDPOINTS.projects.create, formDataToSend, {
+        await apiClient.post(API_ENDPOINTS.projects.create, formDataToSend, {
           headers: {
             'Content-Type': 'multipart/form-data',
           },
@@ -211,7 +212,7 @@ const ProjectForm = () => {
               {existingImages.map((image, index) => (
                 <div key={index} className="image-preview">
                   <img
-                    src={`https://localdouble-h-portfolio.vercel.apphost:3000${image}`}
+                    src={getImageUrl(image)}
                     alt={`Project ${index + 1}`}
                     onError={(e) => {
                       e.target.style.display = 'none';
