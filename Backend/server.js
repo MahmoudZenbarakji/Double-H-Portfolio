@@ -1,77 +1,80 @@
 const express = require('express');
 const app = express();
-const projectRoutes = require('./Routes/project.route');
-const authRoutes = require('./Routes/auth.route');
-const partnersRoutes = require('./Routes/partners.route');
-const heroRoutes = require('./Routes/hero.route');
 const cors = require('cors');
+const mongoose = require('mongoose');
 const dotenv = require('dotenv');
-const path = require('path');
 
-// Load environment variables
 dotenv.config();
 
-const connectDB = require('./config/db');
+// -------------------------
+// MongoDB serverless-safe connection
+// -------------------------
+let isConnected = false;
 
-// CORS Configuration - Production safe
-const corsOptions = {
-    origin:"*",
-    methods: ['GET', 'POST', 'PUT', 'DELETE', 'OPTIONS'],
-    credentials: true,
-    optionsSuccessStatus: 200
+const connectDB = async () => {
+  if (isConnected) return;
+  if (!process.env.MONGO_URI) throw new Error("MONGO_URI is not set!");
+  await mongoose.connect(process.env.MONGO_URI, {
+    useNewUrlParser: true,
+    useUnifiedTopology: true
+  });
+  isConnected = true;
+  console.log("MongoDB connected");
 };
 
-// Apply CORS middleware
-app.use(cors(corsOptions));
+// -------------------------
+// CORS
+// -------------------------
+const allowedOrigins = [
+  "http://localhost:5173",
+  "https://your-frontend.vercel.app"
+];
 
-// Body parsing middleware
+app.use(cors({
+  origin: function(origin, callback) {
+    if (!origin || allowedOrigins.includes(origin)) {
+      callback(null, true);
+    } else {
+      callback(new Error("Not allowed by CORS"));
+    }
+  },
+  credentials: true
+}));
+
 app.use(express.json());
-app.use(express.urlencoded({ extended: true }));
 
-// Serve static files from uploads directory
-app.use('/uploads', express.static(path.join(__dirname, 'uploads')));
-
-// Health check endpoint
-app.get('/api/v1/health', (req, res) => {
-    res.status(200).json({
-        success: true,
-        message: 'API is running',
-        timestamp: new Date().toISOString()
-    });
+// -------------------------
+// Health check
+// -------------------------
+app.get('/api/v1/health', async (req, res) => {
+  try {
+    await connectDB();
+    res.status(200).json({ status: "OK" });
+  } catch (err) {
+    console.error(err);
+    res.status(500).json({ message: "Server error" });
+  }
 });
 
-// API Routes
-app.use('/api/v1/projects', projectRoutes);
-app.use('/api/v1/auth', authRoutes);
-app.use('/api/v1/partners', partnersRoutes);
-app.use('/api/v1/hero', heroRoutes);
-
-// Root endpoint
-app.get('/', (req, res) => {
-    res.json({
-        success: true,
-        message: 'Double H Portfolio API',
-        version: '1.0.0',
-        endpoints: {
-            health: '/api/v1/health',
-            projects: '/api/v1/projects',
-            partners: '/api/v1/partners',
-            hero: '/api/v1/hero',
-            auth: '/api/v1/auth'
-        }
-    });
+// -------------------------
+// Example route: projects
+// -------------------------
+app.get('/api/v1/projects', async (req, res) => {
+  try {
+    await connectDB();
+    const Project = mongoose.models.Project || mongoose.model("Project", new mongoose.Schema({
+      title: String,
+      description: String
+    }));
+    const projects = await Project.find();
+    res.json(projects);
+  } catch (err) {
+    console.error(err);
+    res.status(500).json({ message: "Server error" });
+  }
 });
 
-// Connect to database
-connectDB();
-
-// Start server only if not in Vercel serverless environment
-// if (process.env.VERCEL !== '1') {
-//     const port = process.env.PORT || 3000;
-//     app.listen(port, () => {
-//         console.log(`Server is running on http://localhost:${port}`);
-//     });
-// }
-
-// Export app for Vercel serverless
+// -------------------------
+// Export app for Vercel
+// -------------------------
 module.exports = app;
