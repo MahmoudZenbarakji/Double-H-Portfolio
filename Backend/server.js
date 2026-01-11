@@ -84,6 +84,39 @@ app.get('/api/v1/projects', async (req, res) => {
   }
 });
 
+// Partners
+app.get('/api/v1/partners', async (req, res) => {
+    try {
+      await connectDB();
+      const Partner = mongoose.models.Partner || mongoose.model("Partner", new mongoose.Schema({
+        name: String,
+        link: String
+      }));
+      const partners = await Partner.find();
+      res.json(partners);
+    } catch (err) {
+      console.error("Partners route error:", err);
+      res.status(500).json({ message: "Server error", error: err.message });
+    }
+  });
+  
+  // Hero
+  app.get('/api/v1/hero', async (req, res) => {
+    try {
+      await connectDB();
+      const Hero = mongoose.models.Hero || mongoose.model("Hero", new mongoose.Schema({
+        title: String,
+        image: String
+      }));
+      const hero = await Hero.find();
+      res.json(hero);
+    } catch (err) {
+      console.error("Hero route error:", err);
+      res.status(500).json({ message: "Server error", error: err.message });
+    }
+  });
+  
+
 // -------------------------
 // Export app for Vercel
 // -------------------------
