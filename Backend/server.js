@@ -3,7 +3,7 @@ const app = express();
 const cors = require('cors');
 const mongoose = require('mongoose');
 const dotenv = require('dotenv');
-
+const authRoutes = require('./Routes/auth.route');
 dotenv.config();
 
 // -------------------------
@@ -104,7 +104,7 @@ app.get('/api/v1/partners', async (req, res) => {
     res.status(500).json({ message: "Server error", error: err.message });
   }
 });
-
+app.use('/api/v1/auth', authRoutes);
 // -------------------------
 // Hero route
 // -------------------------
