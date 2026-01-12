@@ -50,9 +50,8 @@ const corsOptions = {
 };
 
 // Apply CORS middleware BEFORE all routes
+// CORS middleware automatically handles OPTIONS preflight requests
 app.use(cors(corsOptions));
-
-// Handle preflight requests explicitly
 
 // Body parsing middleware
 app.use(express.json({ limit: '50mb' }));
