@@ -4,6 +4,7 @@ const cors = require('cors');
 const mongoose = require('mongoose');
 const dotenv = require('dotenv');
 const authRoutes = require('./Routes/auth.route'); // make sure this exists
+const Project = require("./Models/project.schema")
 dotenv.config();
 
 // -------------------------
@@ -67,8 +68,11 @@ app.get('/api/v1/projects', async (req, res) => {
   try {
     await connectDB();
     const Project = mongoose.models.Project || mongoose.model("Project", new mongoose.Schema({
-      title: String,
-      description: String
+      name: String,
+      description: String,
+      date: Date,
+      link: String,
+      images: [String]
     }));
     const projects = await Project.find();
     res.json(projects);
