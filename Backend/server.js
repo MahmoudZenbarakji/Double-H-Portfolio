@@ -16,7 +16,7 @@ const connectDB = async () => {
   if (!process.env.MONGO_URI) throw new Error("MONGO_URI not set!");
   await mongoose.connect(process.env.MONGO_URI); // no options
   isConnected = true;
-  console.log("MongoDB connected");
+  console.log("MongdoDB connected");
 };
 
 // -------------------------
