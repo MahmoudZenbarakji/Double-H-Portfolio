@@ -67,6 +67,16 @@ app.get('/api/v1/health', async (req, res) => {
 app.get('/api/v1/projects', async (req, res) => {
   try {
     await connectDB();
+<<<<<<< HEAD
+=======
+    const Project = mongoose.models.Project || mongoose.model("Project", new mongoose.Schema({
+      name: String,
+      description: String,
+      date: Date,
+      link: String,
+      images: [String]
+    }));
+>>>>>>> ba81741ded1bbe5b56fae9aee3cb46c400e5ac70
     const projects = await Project.find();
     res.json(projects);
   } catch (err) {
