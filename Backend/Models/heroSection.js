@@ -7,6 +7,7 @@ const heroSectionSchema = new mongoose.Schema({
     },
 }, { timestamps: true });
 
-const HeroSection = mongoose.model('HeroSection', heroSectionSchema);
+// Serverless-safe: Check if model exists before creating
+const HeroSection = mongoose.models.HeroSection || mongoose.model('HeroSection', heroSectionSchema);
 
 module.exports = HeroSection;

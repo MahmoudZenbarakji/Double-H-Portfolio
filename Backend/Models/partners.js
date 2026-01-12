@@ -9,6 +9,9 @@ const partnersSchema = new mongoose.Schema({
         type: String,
         required: true,
     },
-});
+}, { timestamps: true });
 
-module.exports = mongoose.model('Partners', partnersSchema);
+// Serverless-safe: Check if model exists before creating
+const Partners = mongoose.models.Partners || mongoose.model('Partners', partnersSchema);
+
+module.exports = Partners;

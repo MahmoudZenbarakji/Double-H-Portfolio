@@ -38,5 +38,8 @@ userSchema.methods.comparePassword = async function (candidatePassword) {
     return await bcrypt.compare(candidatePassword, this.password);
 };
 
-module.exports = mongoose.model('User', userSchema);
+// Serverless-safe: Check if model exists before creating
+const User = mongoose.models.User || mongoose.model('User', userSchema);
+
+module.exports = User;
 
