@@ -15,10 +15,11 @@ const getHeroImages = async (req, res) => {
             data: heroImages,
         });
     } catch (error) {
+        console.error('Get hero images error:', error);
         return res.status(500).json({
             success: false,
             message: 'Failed to fetch hero images',
-            error: error.message,
+            error: process.env.NODE_ENV === 'development' ? error.message : undefined,
         });
     }
 };

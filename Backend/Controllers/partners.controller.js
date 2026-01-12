@@ -48,10 +48,11 @@ const getPartners = async (req, res) => {
             data: partners,
         });
     } catch (error) {
+        console.error('Get partners error:', error);
         return res.status(500).json({
             success: false,
             message: 'Failed to fetch partners',
-            error: error.message,
+            error: process.env.NODE_ENV === 'development' ? error.message : undefined,
         });
     }
 };

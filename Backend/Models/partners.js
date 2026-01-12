@@ -14,5 +14,8 @@ const partnerSchema = new mongoose.Schema(
   { timestamps: true }
 );
 
-module.exports =
-  mongoose.models.Partner || mongoose.model('Partner', partnerSchema);
+// Serverless-safe: Check if model exists before creating
+// Use explicit collection name to avoid pluralization issues
+const Partner = mongoose.models.Partner || mongoose.model('Partner', partnerSchema, 'partners');
+
+module.exports = Partner;
