@@ -1,13 +1,14 @@
 const mongoose = require('mongoose');
 
-const heroSectionSchema = new mongoose.Schema({
+const heroSchema = new mongoose.Schema(
+  {
     images: {
-        type: String,
-        required: true,
+      type: String,
+      required: true,
     },
-}, { timestamps: true });
+  },
+  { timestamps: true }
+);
 
-// Serverless-safe: Check if model exists before creating
-const HeroSection = mongoose.models.HeroSection || mongoose.model('HeroSection', heroSectionSchema);
-
-module.exports = HeroSection;
+module.exports =
+  mongoose.models.Hero || mongoose.model('Hero', heroSchema);
