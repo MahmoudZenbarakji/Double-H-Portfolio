@@ -1,4 +1,4 @@
-const Project = require('../models/project.schema');
+const Project = require('../Models/project.schema');
 
 // ==============================
 // Create Project (with images)

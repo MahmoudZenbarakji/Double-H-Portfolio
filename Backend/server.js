@@ -3,10 +3,6 @@ const app = express();
 const cors = require('cors');
 const dotenv = require('dotenv');
 const path = require('path');
-const Partner = require('./Models/partners');
-const Hero = require('./Models/heroSection');
-const Project = require('./Models/project.schema');
-
 
 // Load environment variables
 dotenv.config();
@@ -23,38 +19,38 @@ const connectDB = require('./config/db');
 // ==============================
 // CORS Configuration - Production Safe
 // ==============================
-// const corsOptions = {
-//     origin: function (origin, callback) {
-//         // Allow requests with no origin (mobile apps, Postman, curl, etc.)
-//         if (!origin) return callback(null, true);
+const corsOptions = {
+    origin: function (origin, callback) {
+        // Allow requests with no origin (mobile apps, Postman, curl, etc.)
+        if (!origin) return callback(null, true);
         
-//         // Allow localhost for development
-//         if (origin.includes('localhost') || origin.includes('127.0.0.1')) {
-//             return callback(null, true);
-//         }
+        // Allow localhost for development
+        if (origin.includes('localhost') || origin.includes('127.0.0.1')) {
+            return callback(null, true);
+        }
         
-//         // Allow production frontend domain
-//         if (origin === 'https://double-h-portfolio-tvgh.vercel.app') {
-//             return callback(null, true);
-//         }
+        // Allow production frontend domain
+        if (origin === 'https://double-h-portfolio-tvgh.vercel.app') {
+            return callback(null, true);
+        }
         
-//         // Allow Vercel preview deployments (any vercel.app subdomain)
-//         if (origin.includes('.vercel.app')) {
-//             return callback(null, true);
-//         }
+        // Allow Vercel preview deployments (any vercel.app subdomain)
+        if (origin.includes('.vercel.app')) {
+            return callback(null, true);
+        }
         
-//         // Block other origins
-//         callback(new Error('Not allowed by CORS'));
-//     },
-//     methods: ['GET', 'POST', 'PUT', 'DELETE', 'OPTIONS'],
-//     allowedHeaders: ['Content-Type', 'Authorization', 'X-Requested-With'],
-//     credentials: true,
-//     optionsSuccessStatus: 200,
-//     maxAge: 86400, // 24 hours
-// };
+        // Block other origins
+        callback(new Error('Not allowed by CORS'));
+    },
+    methods: ['GET', 'POST', 'PUT', 'DELETE', 'OPTIONS'],
+    allowedHeaders: ['Content-Type', 'Authorization', 'X-Requested-With'],
+    credentials: true,
+    optionsSuccessStatus: 200,
+    maxAge: 86400, // 24 hours
+};
 
 // Apply CORS middleware BEFORE all routes
-app.use(cors({ origin: true, credentials: true }));
+app.use(cors(corsOptions));
 
 // Handle preflight requests explicitly
 
@@ -98,29 +94,6 @@ app.get('/api/v1/health', (req, res) => {
         database: dbConnected ? 'connected' : 'disconnected',
     });
 });
-app.get('/api/v1/partners', async (req, res) => {
-  try {
-    await connectDB();
-    const partners = await Partner.find();
-    res.json(partners);
-  } catch (err) {
-    console.error('Partners error:', err);
-    res.status(500).json({ message: 'Server error' });
-  }
-});
-
-app.get('/api/v1/hero', async (req, res) => {
-  try {
-    await connectDB();
-    const hero = await Hero.find();
-    res.json(hero);
-  } catch (err) {
-    console.error('Hero error:', err);
-    res.status(500).json({ message: 'Server error' });
-  }
-});
-
-
 // ==============================
 // API Routes (with DB check)
 // ==============================

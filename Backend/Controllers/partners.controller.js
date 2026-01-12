@@ -1,4 +1,4 @@
-const Partners = require('../models/partners');
+const Partner = require('../Models/partners');
 
 // ==============================
 // Create Partner (with image)
@@ -16,7 +16,7 @@ const createPartner = async (req, res) => {
 
         const image = `/uploads/partners/${req.file.filename}`;
 
-        const partner = await Partners.create({
+        const partner = await Partner.create({
             name,
             image,
         });
@@ -40,7 +40,7 @@ const createPartner = async (req, res) => {
 // ==============================
 const getPartners = async (req, res) => {
     try {
-        const partners = await Partners.find().sort({ createdAt: -1 });
+        const partners = await Partner.find().sort({ createdAt: -1 });
 
         return res.status(200).json({
             success: true,
@@ -61,7 +61,7 @@ const getPartners = async (req, res) => {
 // ==============================
 const getPartnerById = async (req, res) => {
     try {
-        const partner = await Partners.findById(req.params.id);
+        const partner = await Partner.findById(req.params.id);
 
         if (!partner) {
             return res.status(404).json({
@@ -95,7 +95,7 @@ const updatePartner = async (req, res) => {
             updateData.image = `/uploads/partners/${req.file.filename}`;
         }
 
-        const partner = await Partners.findByIdAndUpdate(
+        const partner = await Partner.findByIdAndUpdate(
             req.params.id,
             updateData,
             {
@@ -130,7 +130,7 @@ const updatePartner = async (req, res) => {
 // ==============================
 const deletePartner = async (req, res) => {
     try {
-        const partner = await Partners.findByIdAndDelete(req.params.id);
+        const partner = await Partner.findByIdAndDelete(req.params.id);
 
         if (!partner) {
             return res.status(404).json({

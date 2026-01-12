@@ -1,4 +1,4 @@
-const HeroSection = require('../models/heroSection');
+const Hero = require('../Models/heroSection');
 const fs = require('fs');
 const path = require('path');
 
@@ -7,7 +7,7 @@ const path = require('path');
 // ==============================
 const getHeroImages = async (req, res) => {
     try {
-        const heroImages = await HeroSection.find().sort({ createdAt: -1 });
+        const heroImages = await Hero.find().sort({ createdAt: -1 });
 
         return res.status(200).json({
             success: true,
@@ -42,7 +42,7 @@ const addHeroImage = async (req, res) => {
         const heroImages = await Promise.all(
             files.map(file => {
                 const imagePath = `/uploads/hero/${file.filename}`;
-                return HeroSection.create({
+                return Hero.create({
                     images: imagePath,
                 });
             })
@@ -70,7 +70,7 @@ const addHeroImage = async (req, res) => {
 // ==============================
 const updateHeroImage = async (req, res) => {
     try {
-        const heroImage = await HeroSection.findById(req.params.id);
+        const heroImage = await Hero.findById(req.params.id);
 
         if (!heroImage) {
             return res.status(404).json({
@@ -110,7 +110,7 @@ const updateHeroImage = async (req, res) => {
 // ==============================
 const deleteHeroImage = async (req, res) => {
     try {
-        const heroImage = await HeroSection.findById(req.params.id);
+        const heroImage = await Hero.findById(req.params.id);
 
         if (!heroImage) {
             return res.status(404).json({
@@ -126,7 +126,7 @@ const deleteHeroImage = async (req, res) => {
             fs.unlinkSync(imagePath);
         }
 
-        await HeroSection.findByIdAndDelete(req.params.id);
+        await Hero.findByIdAndDelete(req.params.id);
 
         return res.status(200).json({
             success: true,
