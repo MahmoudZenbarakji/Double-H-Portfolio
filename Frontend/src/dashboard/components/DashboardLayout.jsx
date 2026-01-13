@@ -5,8 +5,17 @@ import './DashboardLayout.css';
 
 const DashboardLayout = () => {
   const [isSidebarOpen, setIsSidebarOpen] = useState(() => {
-    const saved = localStorage.getItem('sidebarOpen');
-    return saved !== null ? JSON.parse(saved) : true;
+    try {
+      const saved = localStorage.getItem('sidebarOpen');
+      if (saved === null || saved === '') {
+        return true;
+      }
+      return JSON.parse(saved);
+    } catch (error) {
+      // If parsing fails, clear the invalid value and return default
+      localStorage.removeItem('sidebarOpen');
+      return true;
+    }
   });
 
   useEffect(() => {
