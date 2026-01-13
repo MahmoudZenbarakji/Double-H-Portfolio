@@ -1,14 +1,12 @@
 const express = require('express');
 const app = express();
 const cors = require('cors');
-//const dotenv = require('dotenv');
 require('dotenv').config();   // 🔥 MUST be first
 
 const path = require('path');
 const { storage } = require('./storage/storage');
 const multer = require('multer');
 const upload = multer({ storage });
-// Load environment variables
 
 // Import routes
 const projectRoutes = require('./Routes/project.route');
@@ -22,42 +20,54 @@ const connectDB = require('./config/db');
 // ==============================
 // CORS Configuration - Production Safe
 // ==============================
+const allowedOrigins = [
+    'https://double-h-portfolio-tvgh.vercel.app',
+    'http://localhost:3000',
+    'http://localhost:5173',
+    'http://localhost:5174',
+    'http://127.0.0.1:3000',
+    'http://127.0.0.1:5173',
+    'http://127.0.0.1:5174',
+];
+
 const corsOptions = {
     origin: function (origin, callback) {
-        // Allow requests with no origin (mobile apps, Postman, curl, etc.)
-        if (!origin) return callback(null, true);
-        
-        // Allow localhost for development
-        if (origin.includes('localhost') || origin.includes('127.0.0.1')) {
-            return callback(null, true);
-        }
-        
-        // Allow production frontend domain
-        if (origin === 'https://double-h-portfolio-tvgh.vercel.app') {
-            return callback(null, true);
-        }
-        
-        // Allow Vercel preview deployments (any vercel.app subdomain)
-        if (origin.includes('.vercel.app')) {
-            return callback(null, true);
-        }
-        
-        // Block other origins
+        if (!origin) return callback(null, true); // Allow mobile apps, Postman, curl
+        if (allowedOrigins.includes(origin)) return callback(null, true);
+
+        // Allow localhost with any port
+        const isLocalhost = origin.startsWith('http://localhost:') ||
+                            origin.startsWith('http://127.0.0.1:');
+        if (isLocalhost) return callback(null, true);
+
         callback(new Error('Not allowed by CORS'));
     },
-    methods: ['GET', 'POST', 'PUT', 'DELETE', 'OPTIONS'],
-    allowedHeaders: ['Content-Type', 'Authorization', 'X-Requested-With'],
+    methods: ['GET', 'POST', 'PUT', 'DELETE', 'OPTIONS', 'PATCH'],
+    allowedHeaders: [
+        'Content-Type',
+        'Authorization',
+        'X-Requested-With',
+        'Accept',
+        'Origin',
+        'Access-Control-Request-Method',
+        'Access-Control-Request-Headers'
+    ],
+    exposedHeaders: ['Content-Type', 'Authorization'],
     credentials: true,
     optionsSuccessStatus: 200,
     maxAge: 86400, // 24 hours
 };
 
-// Apply CORS middleware BEFORE all routes
-app.use(cors(corsOptions));
-
-// Handle preflight requests explicitly
-// app.options('*', cors(corsOptions));
-app.use(cors(corsOptions));
+// ==============================
+// Handle CORS and Preflight Requests Globally
+// ==============================
+app.use((req, res, next) => {
+    cors(corsOptions)(req, res, () => {});
+    if (req.method === 'OPTIONS') {
+        return res.sendStatus(204); // No Content for preflight
+    }
+    next();
+});
 
 // Body parsing middleware
 app.use(express.json({ limit: '50mb' }));
@@ -84,14 +94,17 @@ const checkDatabaseConnection = async (req, res, next) => {
         });
     }
 };
-//we used upload.single to tell "multer" to upload
-// only single image 
+
+// ==============================
+// Temporary Upload Route (Single Image Test)
+// ==============================
 app.post('/upload', upload.single('image'), (req, res) => {
     console.log(req.file);
     res.send('Done');
-  });
+});
+
 // ==============================
-// Health Check Endpoint (No DB required)
+// Health Check Endpoint
 // ==============================
 app.get('/api/v1/health', (req, res) => {
     res.status(200).json({
@@ -101,8 +114,9 @@ app.get('/api/v1/health', (req, res) => {
         database: dbConnected ? 'connected' : 'disconnected',
     });
 });
+
 // ==============================
-// API Routes (with DB check)
+// API Routes
 // ==============================
 app.use('/api/v1/projects', checkDatabaseConnection, projectRoutes);
 app.use('/api/v1/auth', checkDatabaseConnection, authRoutes);
@@ -128,23 +142,21 @@ app.get('/', (req, res) => {
 });
 
 // ==============================
-// Global Error Handler Middleware
+// Global Error Handler
 // ==============================
 app.use((err, req, res, next) => {
     console.error('Unhandled error:', err);
-    
-    // CORS error
+
     if (err.message === 'Not allowed by CORS') {
         return res.status(403).json({
             success: false,
             message: 'CORS policy violation',
         });
     }
-    
-    // Default error response
+
     const statusCode = err.statusCode || 500;
     const message = err.message || 'Internal server error';
-    
+
     res.status(statusCode).json({
         success: false,
         message: message,
@@ -172,12 +184,11 @@ app.use((req, res) => {
         console.log('Database connected successfully');
     } catch (error) {
         console.error('Failed to connect to database on startup:', error.message);
-        // Don't crash - let routes handle DB errors
         dbConnected = false;
     }
 })();
 
 // ==============================
-// Export app for Vercel serverless
+// Export app
 // ==============================
 module.exports = app;
