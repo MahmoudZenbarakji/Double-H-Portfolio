@@ -38,21 +38,29 @@ const createProject = async (req, res) => {
 // ==============================
 const getProjects = async (req, res) => {
     try {
-        const projects = await Project.find().sort({ createdAt: -1 });
-
-        return res.status(200).json({
-            success: true,
-            count: projects.length,
-            data: projects,
-        });
+      const projects = await Project.find().sort({ createdAt: -1 });
+  
+      // Ensure images array exists for each project
+      const safeProjects = projects.map(p => ({
+        ...p.toObject(),
+        images: p.images || [],
+      }));
+  
+      return res.status(200).json({
+        success: true,
+        count: safeProjects.length,
+        data: safeProjects,
+      });
     } catch (error) {
-        return res.status(500).json({
-            success: false,
-            message: 'Failed to fetch projects',
-            error: error.message,
-        });
+      console.error('Get Projects Error:', error);
+      return res.status(500).json({
+        success: false,
+        message: 'Failed to fetch projects',
+        error: process.env.NODE_ENV === 'production' ? undefined : error.message,
+      });
     }
-};
+  };
+  
 
 // ==============================
 // Get Project By ID

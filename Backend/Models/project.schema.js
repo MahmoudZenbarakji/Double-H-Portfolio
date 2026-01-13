@@ -19,7 +19,8 @@ const projectSchema = new mongoose.Schema(
         },
         images: [
             {
-                type: String, // image path or URL
+                type: String,
+                default: [] // image path or URL
             },
         ],
     },
