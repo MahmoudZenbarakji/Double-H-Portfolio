@@ -1,11 +1,12 @@
+// server.js
 const express = require('express');
 const app = express();
 const cors = require('cors');
-require('dotenv').config();   // 🔥 MUST be first
+require('dotenv').config(); // Load .env first
 
 const path = require('path');
-const { storage } = require('./storage/storage');
 const multer = require('multer');
+const { storage } = require('./storage/storage');
 const upload = multer({ storage });
 
 // Import routes
@@ -14,105 +15,77 @@ const authRoutes = require('./Routes/auth.route');
 const partnersRoutes = require('./Routes/partners.route');
 const heroRoutes = require('./Routes/hero.route');
 
-// Import database connection
+// Database connection
 const connectDB = require('./config/db');
 
 // ==============================
-// CORS Configuration - Production Safe
+// CORS Configuration
 // ==============================
 const allowedOrigins = [
-    'https://double-h-portfolio-tvgh.vercel.app',
-    'http://localhost:3000',
-    'http://localhost:5173',
-    'http://localhost:5174',
-    'http://127.0.0.1:3000',
-    'http://127.0.0.1:5173',
-    'http://127.0.0.1:5174',
+  'https://double-h-portfolio-tvgh.vercel.app', // your frontend
+  'http://localhost:3000',
+  'http://localhost:5173',
 ];
 
-const corsOptions = {
+app.use(
+  cors({
     origin: function (origin, callback) {
-        if (!origin) return callback(null, true); // Allow mobile apps, Postman, curl
-        if (allowedOrigins.includes(origin)) return callback(null, true);
-
-        // Allow localhost with any port
-        const isLocalhost = origin.startsWith('http://localhost:') ||
-                            origin.startsWith('http://127.0.0.1:');
-        if (isLocalhost) return callback(null, true);
-
-        callback(new Error('Not allowed by CORS'));
+      if (!origin) return callback(null, true); // Postman, curl, mobile apps
+      if (allowedOrigins.includes(origin)) return callback(null, true);
+      callback(new Error('Not allowed by CORS'));
     },
     methods: ['GET', 'POST', 'PUT', 'DELETE', 'OPTIONS', 'PATCH'],
-    allowedHeaders: [
-        'Content-Type',
-        'Authorization',
-        'X-Requested-With',
-        'Accept',
-        'Origin',
-        'Access-Control-Request-Method',
-        'Access-Control-Request-Headers'
-    ],
+    allowedHeaders: ['Content-Type', 'Authorization'],
     exposedHeaders: ['Content-Type', 'Authorization'],
     credentials: true,
     optionsSuccessStatus: 200,
-    maxAge: 86400, // 24 hours
-};
+  })
+);
 
 // ==============================
-// Handle CORS and Preflight Requests Globally
+// Body Parsing
 // ==============================
-app.use((req, res, next) => {
-    cors(corsOptions)(req, res, () => {});
-    if (req.method === 'OPTIONS') {
-        return res.sendStatus(204); // No Content for preflight
-    }
-    next();
-});
-
-// Body parsing middleware
 app.use(express.json({ limit: '50mb' }));
 app.use(express.urlencoded({ extended: true, limit: '50mb' }));
 
 // ==============================
-// Database Connection Middleware
+// Database Middleware
 // ==============================
 let dbConnected = false;
 const checkDatabaseConnection = async (req, res, next) => {
-    if (dbConnected && require('mongoose').connection.readyState === 1) {
-        return next();
-    }
-    
-    try {
-        await connectDB();
-        dbConnected = true;
-        next();
-    } catch (error) {
-        console.error('Database connection error:', error.message);
-        return res.status(503).json({
-            success: false,
-            message: 'Database service temporarily unavailable',
-        });
-    }
+  if (dbConnected && require('mongoose').connection.readyState === 1) return next();
+
+  try {
+    await connectDB();
+    dbConnected = true;
+    next();
+  } catch (error) {
+    console.error('DB connection error:', error.message);
+    res.status(503).json({
+      success: false,
+      message: 'Database service temporarily unavailable',
+    });
+  }
 };
 
 // ==============================
-// Temporary Upload Route (Single Image Test)
+// Upload route (single image)
 // ==============================
 app.post('/upload', upload.single('image'), (req, res) => {
-    console.log(req.file);
-    res.send('Done');
+  console.log(req.file);
+  res.json({ success: true, file: req.file });
 });
 
 // ==============================
-// Health Check Endpoint
+// Health Check
 // ==============================
 app.get('/api/v1/health', (req, res) => {
-    res.status(200).json({
-        success: true,
-        message: 'API is running',
-        timestamp: new Date().toISOString(),
-        database: dbConnected ? 'connected' : 'disconnected',
-    });
+  res.status(200).json({
+    success: true,
+    message: 'API is running',
+    database: dbConnected ? 'connected' : 'disconnected',
+    timestamp: new Date().toISOString(),
+  });
 });
 
 // ==============================
@@ -124,71 +97,58 @@ app.use('/api/v1/partners', checkDatabaseConnection, partnersRoutes);
 app.use('/api/v1/hero', checkDatabaseConnection, heroRoutes);
 
 // ==============================
-// Root Endpoint
+// Root Route
 // ==============================
 app.get('/', (req, res) => {
-    res.json({
-        success: true,
-        message: 'Double H Portfolio API',
-        version: '1.0.0',
-        endpoints: {
-            health: '/api/v1/health',
-            projects: '/api/v1/projects',
-            partners: '/api/v1/partners',
-            hero: '/api/v1/hero',
-            auth: '/api/v1/auth'
-        }
-    });
+  res.json({
+    success: true,
+    message: 'Double H Portfolio API',
+    version: '1.0.0',
+    endpoints: {
+      health: '/api/v1/health',
+      projects: '/api/v1/projects',
+      partners: '/api/v1/partners',
+      hero: '/api/v1/hero',
+      auth: '/api/v1/auth',
+    },
+  });
 });
 
 // ==============================
 // Global Error Handler
 // ==============================
 app.use((err, req, res, next) => {
-    console.error('Unhandled error:', err);
+  console.error('Unhandled error:', err);
+  if (err.message === 'Not allowed by CORS') {
+    return res.status(403).json({ success: false, message: 'CORS policy violation' });
+  }
 
-    if (err.message === 'Not allowed by CORS') {
-        return res.status(403).json({
-            success: false,
-            message: 'CORS policy violation',
-        });
-    }
-
-    const statusCode = err.statusCode || 500;
-    const message = err.message || 'Internal server error';
-
-    res.status(statusCode).json({
-        success: false,
-        message: message,
-    });
+  const statusCode = err.statusCode || 500;
+  res.status(statusCode).json({ success: false, message: err.message || 'Internal server error' });
 });
 
 // ==============================
 // 404 Handler
 // ==============================
 app.use((req, res) => {
-    res.status(404).json({
-        success: false,
-        message: 'Route not found',
-        path: req.path,
-    });
+  res.status(404).json({ success: false, message: 'Route not found', path: req.path });
 });
 
 // ==============================
-// Initialize Database Connection (Non-blocking)
+// Initialize DB
 // ==============================
 (async () => {
-    try {
-        await connectDB();
-        dbConnected = true;
-        console.log('Database connected successfully');
-    } catch (error) {
-        console.error('Failed to connect to database on startup:', error.message);
-        dbConnected = false;
-    }
+  try {
+    await connectDB();
+    dbConnected = true;
+    console.log('Database connected successfully');
+  } catch (error) {
+    console.error('Failed DB startup:', error.message);
+    dbConnected = false;
+  }
 })();
 
 // ==============================
-// Export app
+// Export app for Vercel
 // ==============================
 module.exports = app;
