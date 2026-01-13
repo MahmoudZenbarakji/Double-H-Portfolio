@@ -54,7 +54,7 @@ const corsOptions = {
     'Access-Control-Request-Headers'
   ],
   exposedHeaders: ['Content-Type', 'Authorization'],
-  credentials: true,
+  credentials: false, // Set to false to allow requests with credentials: 'omit'
   optionsSuccessStatus: 200,
   maxAge: 86400, // 24 hours
 };

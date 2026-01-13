@@ -7,17 +7,23 @@ const getHeroImages = async (req, res) => {
     try {
         const heroImages = await Hero.find().sort({ createdAt: -1 });
 
+        // Convert Mongoose documents to plain objects for safe serialization
+        const safeHeroImages = heroImages.map(h => ({
+            ...h.toObject(),
+            images: h.images || null,
+        }));
+
         return res.status(200).json({
             success: true,
-            count: heroImages.length,
-            data: heroImages,
+            count: safeHeroImages.length,
+            data: safeHeroImages,
         });
     } catch (error) {
-        console.error('Get hero images error:', error);
+        console.error('Get Hero Images Error:', error);
         return res.status(500).json({
             success: false,
             message: 'Failed to fetch hero images',
-            error: process.env.NODE_ENV === 'development' ? error.message : undefined,
+            error: process.env.NODE_ENV === 'production' ? undefined : error.message,
         });
     }
 };
@@ -51,7 +57,7 @@ const addHeroImage = async (req, res) => {
             message: files.length === 1 
                 ? 'Hero image added successfully' 
                 : `${files.length} hero images added successfully`,
-            data: heroImages,
+            data: heroImages.map(h => h.toObject()),
             count: heroImages.length,
         });
     } catch (error) {
@@ -86,7 +92,7 @@ const updateHeroImage = async (req, res) => {
         return res.status(200).json({
             success: true,
             message: 'Hero image updated successfully',
-            data: heroImage,
+            data: heroImage.toObject(),
         });
     } catch (error) {
         return res.status(400).json({

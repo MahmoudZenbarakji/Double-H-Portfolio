@@ -17,14 +17,12 @@ const ProjectsSection = () => {
         setLoading(true);
         setError(null);
         
-        // Make fetch request without credentials to avoid auth issues
+        // Make fetch request
         const response = await fetch(API_PROJECTS, {
           method: 'GET',
           headers: {
             'Content-Type': 'application/json',
           },
-          // Don't send credentials for public routes
-          credentials: 'omit',
         });
         
         // Log response for debugging
