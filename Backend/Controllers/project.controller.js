@@ -22,7 +22,7 @@ const createProject = async (req, res) => {
         return res.status(201).json({
             success: true,
             message: 'Project created successfully',
-            data: project,
+            data: project.toObject(),
         });
     } catch (error) {
         return res.status(500).json({
@@ -78,7 +78,7 @@ const getProjectById = async (req, res) => {
 
         return res.status(200).json({
             success: true,
-            data: project,
+            data: project.toObject(),
         });
     } catch (error) {
         return res.status(400).json({
@@ -113,7 +113,7 @@ const updateProject = async (req, res) => {
         return res.status(200).json({
             success: true,
             message: 'Project updated successfully',
-            data: project,
+            data: project.toObject(),
         });
     } catch (error) {
         return res.status(400).json({
