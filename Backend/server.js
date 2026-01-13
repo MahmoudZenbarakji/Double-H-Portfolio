@@ -112,10 +112,22 @@ app.get('/api/v1/health', (req, res) => {
 // ==============================
 // API Routes
 // ==============================
-app.use('/api/v1/projects', checkDatabaseConnection, projectRoutes);
-app.use('/api/v1/auth', checkDatabaseConnection, authRoutes);
-app.use('/api/v1/partners', checkDatabaseConnection, partnersRoutes);
-app.use('/api/v1/hero', checkDatabaseConnection, heroRoutes);
+app.use('/api/v1/projects', projectRoutes);
+app.use('/api/v1/auth', authRoutes);
+app.use('/api/v1/partners', partnersRoutes);
+app.use('/api/v1/hero', heroRoutes);
+app.use(async (req, res, next) => {
+    try {
+      await connectDB();
+      next();
+    } catch (error) {
+      console.error('DB connection failed:', error.message);
+      return res.status(500).json({
+        success: false,
+        message: 'Database connection failed',
+      });
+    }
+  });
 
 // ==============================
 // Root Route
@@ -158,17 +170,19 @@ app.use((req, res) => {
 // ==============================
 // Initialize DB
 // ==============================
-(async () => {
-  try {
-    await connectDB();
-    dbConnected = true;
-    console.log('Database connected successfully');
-  } catch (error) {
-    console.error('Failed DB startup:', error.message);
-    dbConnected = false;
-  }
-})();
-
+// (async () => {
+//   try {
+//     await connectDB();
+//     dbConnected = true;
+//     console.log('Database connected successfully');
+//   } catch (error) {
+//     console.error('Failed DB startup:', error.message);
+//     dbConnected = false;
+//   }
+// })();
+app.listen(3000, () => {
+  console.log('Server is running on port http://localhost:3000');
+});
 // ==============================
 // Export app for Vercel
 // ==============================
