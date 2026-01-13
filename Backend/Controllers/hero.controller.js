@@ -1,4 +1,4 @@
-const Hero = require('../Models/heroSection');
+const Hero =  require("../Models/heroSection") 
 const fs = require('fs');
 const path = require('path');
 
