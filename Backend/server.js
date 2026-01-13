@@ -30,14 +30,30 @@ const allowedOrigins = [
   'http://localhost:5174',
 ];
 
-app.use(cors({
+const corsOptions = {
   origin: (origin, cb) => {
-    if (!origin) return cb(null, true);
+    if (!origin) return cb(null, true); // Allow requests with no origin (Postman, curl, etc.)
     if (allowedOrigins.includes(origin)) return cb(null, true);
     if (origin.startsWith('http://localhost')) return cb(null, true);
     cb(new Error('Not allowed by CORS'));
   },
-}));
+  methods: ['GET', 'POST', 'PUT', 'DELETE', 'OPTIONS', 'PATCH'],
+  allowedHeaders: [
+    'Content-Type',
+    'Authorization',
+    'X-Requested-With',
+    'Accept',
+    'Origin',
+    'Access-Control-Request-Method',
+    'Access-Control-Request-Headers'
+  ],
+  exposedHeaders: ['Content-Type', 'Authorization'],
+  credentials: false,
+  optionsSuccessStatus: 200,
+  maxAge: 86400, // 24 hours
+};
+
+app.use(cors(corsOptions));
 
 // ==============================
 // Body parsing
@@ -94,8 +110,33 @@ app.get('/', (req, res) => {
 // Error handler
 // ==============================
 app.use((err, req, res, next) => {
-  console.error(err);
-  res.status(500).json({ success: false, message: 'Internal Server Error' });
+  console.error('Error:', err);
+  
+  // Handle CORS errors
+  if (err.message === 'Not allowed by CORS') {
+    return res.status(403).json({ 
+      success: false, 
+      message: 'CORS policy violation',
+      origin: req.headers.origin 
+    });
+  }
+  
+  const statusCode = err.statusCode || 500;
+  res.status(statusCode).json({ 
+    success: false, 
+    message: err.message || 'Internal Server Error' 
+  });
+});
+
+// ==============================
+// 404 Handler
+// ==============================
+app.use((req, res) => {
+  res.status(404).json({ 
+    success: false, 
+    message: 'Route not found', 
+    path: req.path 
+  });
 });
 
 // ==============================
