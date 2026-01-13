@@ -1,13 +1,14 @@
 const express = require('express');
 const app = express();
 const cors = require('cors');
-const dotenv = require('dotenv');
+//const dotenv = require('dotenv');
+require('dotenv').config();   // 🔥 MUST be first
+
 const path = require('path');
 const { storage } = require('./storage/storage');
 const multer = require('multer');
 const upload = multer({ storage });
 // Load environment variables
-dotenv.config();
 
 // Import routes
 const projectRoutes = require('./Routes/project.route');
