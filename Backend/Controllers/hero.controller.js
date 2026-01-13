@@ -1,6 +1,4 @@
-const Hero =  require("../Models/heroSection") 
-const fs = require('fs');
-const path = require('path');
+const Hero =  require("../Models/heroSection")
 
 // ==============================
 // Get Hero Section Images
@@ -42,9 +40,8 @@ const addHeroImage = async (req, res) => {
         // Create multiple hero image documents
         const heroImages = await Promise.all(
             files.map(file => {
-                const imagePath = `/uploads/hero/${file.filename}`;
                 return Hero.create({
-                    images: imagePath,
+                    images: file.path,
                 });
             })
         );
@@ -80,15 +77,9 @@ const updateHeroImage = async (req, res) => {
             });
         }
 
-        // If new image is uploaded, delete old image
+        // If new image is uploaded, update the image URL
         if (req.file) {
-            // Remove leading slash and join with project root
-            const oldImagePath = path.join(__dirname, '..', heroImage.images.replace(/^\//, ''));
-            if (fs.existsSync(oldImagePath)) {
-                fs.unlinkSync(oldImagePath);
-            }
-
-            heroImage.images = `/uploads/hero/${req.file.filename}`;
+            heroImage.images = req.file.path;
             await heroImage.save();
         }
 
@@ -118,13 +109,6 @@ const deleteHeroImage = async (req, res) => {
                 success: false,
                 message: 'Hero image not found',
             });
-        }
-
-        // Delete the image file
-        // Remove leading slash and join with project root
-        const imagePath = path.join(__dirname, '..', heroImage.images.replace(/^\//, ''));
-        if (fs.existsSync(imagePath)) {
-            fs.unlinkSync(imagePath);
         }
 
         await Hero.findByIdAndDelete(req.params.id);

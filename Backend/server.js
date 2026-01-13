@@ -3,7 +3,9 @@ const app = express();
 const cors = require('cors');
 const dotenv = require('dotenv');
 const path = require('path');
-
+const { storage } = require('./storage/storage');
+const multer = require('multer');
+const upload = multer({ storage });
 // Load environment variables
 dotenv.config();
 
@@ -54,13 +56,12 @@ app.use(cors(corsOptions));
 
 // Handle preflight requests explicitly
 // app.options('*', cors(corsOptions));
+app.use(cors(corsOptions));
 
 // Body parsing middleware
 app.use(express.json({ limit: '50mb' }));
 app.use(express.urlencoded({ extended: true, limit: '50mb' }));
 
-// Serve static files from uploads directory
-// /
 // ==============================
 // Database Connection Middleware
 // ==============================
@@ -82,7 +83,12 @@ const checkDatabaseConnection = async (req, res, next) => {
         });
     }
 };
-
+//we used upload.single to tell "multer" to upload
+// only single image 
+app.post('/upload', upload.single('image'), (req, res) => {
+    console.log(req.file);
+    res.send('Done');
+  });
 // ==============================
 // Health Check Endpoint (No DB required)
 // ==============================

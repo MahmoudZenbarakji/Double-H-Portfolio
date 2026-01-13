@@ -8,7 +8,7 @@ const createProject = async (req, res) => {
         const { name, description, date, link } = req.body;
 
         const images = req.files?.map(
-            file => `/uploads/projects/${file.filename}`
+            file => file.path
         ) || [];
 
         const project = await Project.create({

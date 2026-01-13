@@ -14,7 +14,7 @@ const createPartner = async (req, res) => {
             });
         }
 
-        const image = `/uploads/partners/${req.file.filename}`;
+        const image = req.file.path;
 
         const partner = await Partner.create({
             name,
@@ -91,9 +91,9 @@ const updatePartner = async (req, res) => {
     try {
         const updateData = { ...req.body };
 
-        // If a new image is uploaded, update the image path
+        // If a new image is uploaded, update the image URL
         if (req.file) {
-            updateData.image = `/uploads/partners/${req.file.filename}`;
+            updateData.image = req.file.path;
         }
 
         const partner = await Partner.findByIdAndUpdate(

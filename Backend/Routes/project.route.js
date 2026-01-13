@@ -9,7 +9,7 @@ const {
     deleteProject,
 } = require('../controllers/project.controller');
 
-// const uploadProjectImages = require('../middleware/uploads');
+const uploadProjectImages = require('../middleware/uploads');
 
 // ==============================
 // Public Routes
@@ -28,7 +28,7 @@ router.get('/:id', getProjectById);
 // Create project (upload multiple images)
 router.post(
     '/',
-    // uploadProjectImages.array('images', 10),
+    uploadProjectImages.array('images', 10),
     createProject
 );
 

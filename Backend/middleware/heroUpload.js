@@ -1,30 +1,9 @@
 const multer = require('multer');
-const path = require('path');
-const fs = require('fs');
-
-// Ensure the hero upload directory exists
-const uploadDir = 'uploads/hero';
-if (!fs.existsSync(uploadDir)) {
-    fs.mkdirSync(uploadDir, { recursive: true });
-}
-
-const storage = multer.diskStorage({
-    destination: (req, file, cb) => {
-        cb(null, uploadDir);
-    },
-    filename: (req, file, cb) => {
-        cb(
-            null,
-            `${Date.now()}-${Math.round(Math.random() * 1e9)}${path.extname(file.originalname)}`
-        );
-    },
-});
+const { storage } = require('../storage/storage');
 
 const fileFilter = (req, file, cb) => {
     const allowedTypes = /jpeg|jpg|png|webp/;
-    const isValid =
-        allowedTypes.test(file.mimetype) &&
-        allowedTypes.test(path.extname(file.originalname).toLowerCase());
+    const isValid = allowedTypes.test(file.mimetype);
 
     if (isValid) {
         cb(null, true);
