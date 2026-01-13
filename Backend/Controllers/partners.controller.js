@@ -24,7 +24,7 @@ const createPartner = async (req, res) => {
         return res.status(201).json({
             success: true,
             message: 'Partner created successfully',
-            data: partner,
+            data: partner.toObject(),
         });
     } catch (error) {
         return res.status(500).json({
@@ -42,17 +42,23 @@ const getPartners = async (req, res) => {
     try {
         const partners = await Partner.find().sort({ createdAt: -1 });
 
+        // Convert Mongoose documents to plain objects for safe serialization
+        const safePartners = partners.map(p => ({
+            ...p.toObject(),
+            image: p.image || null,
+        }));
+
         return res.status(200).json({
             success: true,
-            count: partners.length,
-            data: partners,
+            count: safePartners.length,
+            data: safePartners,
         });
     } catch (error) {
-        console.error('Get partners error:', error);
+        console.error('Get Partners Error:', error);
         return res.status(500).json({
             success: false,
             message: 'Failed to fetch partners',
-            error: process.env.NODE_ENV === 'development' ? error.message : undefined,
+            error: process.env.NODE_ENV === 'production' ? undefined : error.message,
         });
     }
 };
@@ -73,7 +79,7 @@ const getPartnerById = async (req, res) => {
 
         return res.status(200).json({
             success: true,
-            data: partner,
+            data: partner.toObject(),
         });
     } catch (error) {
         return res.status(400).json({
@@ -115,7 +121,7 @@ const updatePartner = async (req, res) => {
         return res.status(200).json({
             success: true,
             message: 'Partner updated successfully',
-            data: partner,
+            data: partner.toObject(),
         });
     } catch (error) {
         return res.status(400).json({
