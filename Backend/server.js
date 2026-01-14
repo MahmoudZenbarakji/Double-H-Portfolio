@@ -95,9 +95,9 @@ app.use(async (req, res, next) => {
 /* ==============================
    UPLOAD
 ================================ */
-app.post('/upload', upload.single('image'), (req, res) => {
-  res.json({ success: true, file: req.file });
-});
+// app.post('/upload', upload.single('image'), (req, res) => {
+//   res.json({ success: true, file: req.file });
+// });
 
 /* ==============================
    HEALTH
