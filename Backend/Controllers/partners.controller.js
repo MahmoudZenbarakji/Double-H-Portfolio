@@ -1,5 +1,6 @@
 const Partner = require("../Models/partners");
-const uploadToCloudinary = require("../utils/cloudinaryUpload");
+const uploadToCloudinary = require("../storage/storage");
+
 
 // ==============================
 // Create Partner

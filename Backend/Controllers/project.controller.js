@@ -1,6 +1,6 @@
 const Project = require("../Models/project.schema");
-const uploadToCloudinary = require("../utils/cloudinaryUpload");
 
+const uploadToCloudinary = require("../storage/storage");
 // ==============================
 // Create Project
 // ==============================
