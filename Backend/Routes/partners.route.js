@@ -7,7 +7,7 @@ const {
     getPartnerById,
     updatePartner,
     deletePartner,
-} = require('../controllers/partners.controller');
+} = require('../Controllers/partners.controller');
 
 const uploadPartnerImage = require('../middleware/partnerUpload');
 

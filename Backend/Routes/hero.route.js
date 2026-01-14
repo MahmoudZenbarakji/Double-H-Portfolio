@@ -6,7 +6,7 @@ const {
     addHeroImage,
     updateHeroImage,
     deleteHeroImage,
-} = require('../controllers/hero.controller');
+} = require('../Controllers/hero.controller');
 
 const uploadHeroImage = require('../middleware/heroUpload');
 

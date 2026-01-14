@@ -7,7 +7,7 @@ const {
     getProjectById,
     updateProject,
     deleteProject,
-} = require('../controllers/project.controller');
+} = require('../Controllers/project.controller');
 
 const uploadProjectImages = require('../middleware/uploads');
 
