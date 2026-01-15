@@ -1,5 +1,5 @@
 import React from "react";
-import styled from "styled-components";
+import styled from "styled-components"; 
 import {
   BuildingOfficeIcon,
   ClipboardDocumentCheckIcon,
@@ -22,12 +22,29 @@ const services = [
 const ServicesCards = () => {
   return (
     <StyledSection>
+      <div className="bg-decorations">
+        <motion.div 
+          animate={{ x: [0, 50, -20, 0], y: [0, 30, 60, 0], scale: [1, 1.2, 0.9, 1] }}
+          transition={{ duration: 20, repeat: Infinity, ease: "linear" }}
+          className="blob blob-1"
+        ></motion.div>
+        
+        <motion.div 
+          animate={{ x: [0, -60, 20, 0], y: [0, -40, -20, 0], scale: [1, 0.8, 1.1, 1] }}
+          transition={{ duration: 25, repeat: Infinity, ease: "linear" }}
+          className="blob blob-2"
+        ></motion.div>
+
+        <div className="light-spot"></div>
+        <div className="grid-overlay"></div>
+      </div>
+
       <motion.h2
         initial={{ opacity: 0, y: 40, scale: 0.8 }}
         whileInView={{ opacity: 1, y: 0, scale: 1 }}
         transition={{ duration: 0.8, ease: "easeOut" }}
         viewport={{ once: true, amount: 0.6 }}
-        className="relative w-fit mx-auto text-center text-3xl md:text-5xl font-extrabold 
+        className="relative z-20 w-fit mx-auto text-center text-3xl md:text-5xl font-extrabold 
                bg-gradient-to-r from-green-700 via-gray-600 to-green-500 
                bg-clip-text text-transparent tracking-wide"
       >
@@ -54,155 +71,149 @@ const ServicesCards = () => {
           </div>
         </div>
 
-        <div className="info-card">
-          <h3 className="info-title">Why Choose Our Services</h3>
-          <p className="info-paragraph">
+        <motion.div 
+          className="info-card"
+          initial={{ opacity: 0, x: 50 }}
+          whileInView={{ opacity: 1, x: 0 }}
+          transition={{ duration: 0.8, ease: "easeOut" }}
+          viewport={{ once: true }}
+        >
+          <motion.h3 
+            initial={{ opacity: 0, y: 20 }}
+            whileInView={{ opacity: 1, y: 0 }}
+            transition={{ delay: 0.3, duration: 0.6 }}
+            className="info-title"
+          >
+            Why Choose Our Services
+          </motion.h3>
+          
+          <motion.p 
+            initial={{ opacity: 0, y: 20 }}
+            whileInView={{ opacity: 1, y: 0 }}
+            transition={{ delay: 0.5, duration: 0.6 }}
+            className="info-paragraph"
+          >
             We provide architectural solutions with precision, creativity, and
             sustainability.
-          </p>
+          </motion.p>
+          
           <ul className="info-list">
-            <li>✔ Expert Architectural Design</li>
-            <li>✔ Sustainable & Modern Solutions</li>
-            <li>✔ Professional Supervision</li>
-            <li>✔ Innovative 3D Visualization</li>
+            {["Expert Architectural Design", "Sustainable & Modern Solutions", "Professional Supervision", "Innovative 3D Visualization"].map((text, index) => (
+              <motion.li 
+                key={index}
+                initial={{ opacity: 0, x: -20 }}
+                whileInView={{ opacity: 1, x: 0 }}
+                transition={{ delay: 0.7 + index * 0.1, duration: 0.5 }}
+              >
+                ✔ {text}
+              </motion.li>
+            ))}
           </ul>
-        </div>
+        </motion.div>
       </div>
     </StyledSection>
   );
 };
 
 const StyledSection = styled.section`
-  background: linear-gradient(135deg, #f0f0f0, #d4d4d4, #bfbfbf);
-  padding: 4rem 1rem;
+  background-color: #d4dcd6; 
+  background: linear-gradient(135deg, #d4dcd6 0%, #bbc7be 100%);
+  padding: 6rem 1rem; /* زيادة البادينج الكلي للقسم */
   position: relative;
   overflow: hidden;
 
+  .bg-decorations {
+    position: absolute; inset: 0; pointer-events: none; z-index: 1;
+    .grid-overlay {
+      position: absolute; inset: 0;
+      background-image: linear-gradient(rgba(20, 57, 57, 0.04) 1px, transparent 1px),
+                        linear-gradient(90deg, rgba(20, 57, 57, 0.04) 1px, transparent 1px);
+      background-size: 45px 45px;
+      animation: gridMove 60s linear infinite;
+    }
+    .blob { position: absolute; width: 600px; height: 600px; border-radius: 50%; filter: blur(100px); opacity: 0.25; }
+    .blob-1 { background: #8fa79b; top: -15%; left: -10%; }
+    .blob-2 { background: #adbdb1; bottom: -15%; right: -10%; }
+    .light-spot {
+      position: absolute; top: 50%; left: 50%; width: 100%; height: 100%; transform: translate(-50%, -50%);
+      background: radial-gradient(circle, rgba(255,255,255,0.2) 0%, transparent 70%);
+      animation: pulseLight 10s ease-in-out infinite alternate;
+    }
+  }
+
+  @keyframes gridMove { from { background-position: 0 0; } to { background-position: 100px 100px; } }
+  @keyframes pulseLight { from { opacity: 0.3; transform: translate(-50%, -50%) scale(1); } to { opacity: 0.6; transform: translate(-50%, -50%) scale(1.2); } }
+
   .layout {
     display: flex;
-    flex-direction: row; /* افتراضي للديسكتوب */
+    flex-direction: row;
     justify-content: center;
     align-items: center;
-    gap: 2rem;
+    gap: 4rem;
     max-width: 1200px;
-    margin: 60px 40px  auto 90px;
+    margin: 100px auto 0 auto;
+    position: relative;
+    z-index: 10;
     
     @media (max-width: 968px) {
-      flex-direction: column; /* تحويل لعمودي في الموبايل */
-      gap: 3rem;
-      // margin-top:150px;
-      margin:150px 0 auto auto;
+      flex-direction: column;
+      margin-top: 180px; /* مسافة كبيرة بين العنوان والكروت */
+      gap: 15rem; /* مسافة كبيرة بين الكروت الدوارة والكارد اليميني */
     }
   }
 
   .wrapper {
-    flex: 0.6;
+    flex: 1;
     height: 400px;
-    width: 100%;
     position: relative;
     display: flex;
     justify-content: center;
     perspective: 1200px;
+    @media (max-width: 968px) {
+      height: 200px; /* تقليل المساحة المحجوزة للكروت لمنع التداخل */
+    }
   }
 
   .inner {
-    --w: 120px;
-    --h: 180px;
-    --translateZ: 220px;
-    --rotateX: -10deg;
-    position: absolute;
-    width: var(--w);
-    height: var(--h);
-    transform-style: preserve-3d;
-    animation: rotating 25s linear infinite;
-    /* التوسيط */
-    left: 50%;
-    top: 40%;
-    margin-left: calc(var(--w) / -2);
-    margin-top: calc(var(--h) / -2);
-
-    @media (max-width: 640px) {
-      --w: 90px;
-      --h: 140px;
-      --translateZ: 150px;
-    }
+    --w: 120px; --h: 180px; --translateZ: 250px; --rotateX: -10deg;
+    position: absolute; width: var(--w); height: var(--h);
+    transform-style: preserve-3d; animation: rotating 25s linear infinite;
+    left: 50%; top: 50%; margin-left: calc(var(--w) / -2); margin-top: calc(var(--h) / -2);
+    @media (max-width: 640px) { --w: 100px; --h: 150px; --translateZ: 170px; }
   }
 
-  @keyframes rotating {
-    from { transform: rotateX(var(--rotateX)) rotateY(0); }
-    to { transform: rotateX(var(--rotateX)) rotateY(1turn); }
-  }
+  @keyframes rotating { from { transform: rotateX(var(--rotateX)) rotateY(0); } to { transform: rotateX(var(--rotateX)) rotateY(1turn); } }
 
   .card {
-    position: absolute;
-    border: 2px solid rgba(var(--color-card));
-    border-radius: 12px;
-    inset: 0;
+    position: absolute; border: 2px solid rgba(var(--color-card), 0.7); border-radius: 12px; inset: 0;
     transform: rotateY(calc((360deg / var(--quantity)) * var(--index))) translateZ(var(--translateZ));
-    background: rgba(255, 255, 255, 0.1);
-    backdrop-filter: blur(5px);
+    background: rgba(255, 255, 255, 0.2); backdrop-filter: blur(8px); overflow: hidden;
   }
 
   .img {
-    width: 100%; height: 100%;
-    display: flex; align-items: center; justify-content: center;
-    background: radial-gradient(circle, rgba(var(--color-card), 0.2) 0%, rgba(var(--color-card), 0.8) 100%);
+    width: 100%; height: 100%; display: flex; align-items: center; justify-content: center;
+    background: radial-gradient(circle, rgba(var(--color-card), 0.5) 0%, rgba(var(--color-card), 0.9) 100%);
   }
 
-  .card-h3 {
-    margin-top: 8px;
-    font-size: 0.8rem;
-    line-height: 1.1;
-  }
+  .content { display: flex; flex-direction: column; align-items: center; justify-content: center; text-align: center; padding: 10px; }
+  .card-h3 { margin-top: 12px; font-size: 0.85rem; font-weight: 700; color: #143939; }
 
-  /* ✅ تعديلات الكارد اليميني لضبط الموبايل */
   .info-card {
-    flex: 0.4;
-    background: rgba(20, 57, 57, 0.9);
-    border-radius: 1.5rem;
-    padding: 2rem;
-    box-shadow: 0px 10px 30px rgba(0, 0, 0, 0.3);
+    flex: 0.8;
+    background: rgba(20, 57, 57, 0.95);
+    border-radius: 2rem;
+    padding: 3rem;
     color: #fff;
-    width: 100%;
-    max-width: 450px; /* منع التمدد العرضي الزائد */
-    z-index: 10;
-  
+    box-shadow: 0 20px 40px rgba(0,0,0,0.2);
     @media (max-width: 968px) {
-       max-width: 90%; /* في الموبايل ياخد عرض الشاشة تقريباً */
-       padding: 1.5rem;
-       margin-top:120px;
+      width: 95%;
+      margin: 0 auto;
+      /* تم النزول تلقائياً بسبب فجوة الـ gap في الـ layout */
     }
-  
-
-  .info-title {
-    font-size: 1.6rem; /* تصغير من 2rem */
-    font-weight: 800;
-    margin-bottom: 0.8rem;
-    color: #8efccc; /* لون مميز للعنوان */
   }
 
-  .info-paragraph {
-    font-size: 1.1rem; /* تصغير من 1.8rem لأنه كان ضخم جداً */
-    margin-bottom: 1.5rem;
-    line-height: 1.5;
-    opacity: 0.9;
-  }
-
-  .info-list {
-    list-style: none;
-    padding: 0;
-  }
-
-  .info-list li {
-    margin-bottom: 0.8rem;
-    font-size: 0.95rem;
-    display: flex;
-    align-items: center;
-    gap: 10px;
-    border-bottom: 1px solid rgba(255,255,255,0.1);
-    padding-bottom: 5px;
-  }
-
+  .info-title { font-size: 1.8rem; font-weight: 800; color: #8efccc; margin-bottom: 1rem; }
+  .info-list li { margin-top: 10px; display: flex; align-items: center; gap: 10px; opacity: 0.9; }
   .inner:hover { animation-play-state: paused; }
 `;
 

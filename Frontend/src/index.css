@@ -1,4 +1,8 @@
 @import "tailwindcss";
+* {
+    font-family: 'Inter Tight', sans-serif;
+}
+
 @keyframes borderLoop {
     0% {
         background-position: 0% 50%;

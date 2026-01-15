@@ -100,15 +100,25 @@ export default function Hero() {
       {/* المحتوى */}
       <div className="relative z-10 flex flex-col md:flex-row items-center justify-between px-0 sm:px-10 md:px-12 pt-40 sm:pt-52 md:pt-64 pb-16 gap-12">
         <div className="md:w-1/2 w-full flex flex-col items-start space-y-8 sm:space-y-10 text-left">
-          {/* العنوان */}
+          {/* العنوان: تباعد أقل قليلاً tracking-[0.05em] مع خط Dosis */}
           <motion.h1
             initial={{ scale: 0.9, opacity: 0 }}
             animate={{ scale: 1, opacity: 1 }}
             transition={{ duration: 1 }}
-            className="text-3xl sm:text-4xl md:text-6xl lg:text-7xl font-bold leading-tight whitespace-pre-line md:whitespace-nowrap w-full sm:max-w-[75vw] pl-2 sm:pl-0"
+            style={{ fontFamily: "'Dosis', sans-serif" }}
+            className="text-3xl sm:text-4xl md:text-6xl lg:text-7xl font-black leading-tight whitespace-pre-line md:whitespace-nowrap w-full sm:max-w-[75vw] pl-2 sm:pl-0 tracking-[0.05em]"
           >
-            {displayed}
-            <span className="animate-pulse">|</span>
+            <span 
+              className="bg-gradient-to-br from-[#143939] via-[#ffffff] to-[#d7d7d7] bg-clip-text text-transparent"
+              style={{ 
+                filter: "drop-shadow(0px 4px 8px rgba(20, 57, 57, 0.4))",
+                WebkitBackgroundClip: "text" 
+              }}
+            >
+              {displayed}
+            </span>
+            
+            <span className="text-[#d7d7d7] animate-pulse ml-1">|</span>
           </motion.h1>
 
           {/* الفقرة تظهر بعد انتهاء الكتابة */}
@@ -117,10 +127,10 @@ export default function Hero() {
               initial={{ opacity: 0, y: 20 }}
               animate={{ opacity: 1, y: 0 }}
               transition={{ duration: 1, delay: 0.3 }}
-              className="text-base sm:text-lg md:text-xl lg:text-2xl text-gray-200 whitespace-pre-line w-full sm:max-w-[75vw] pl-2 sm:pl-0"
+              className="text-base sm:text-lg md:text-xl lg:text-2xl text-gray-200 whitespace-pre-line w-full max-w-[260px] sm:max-w-[75vw] pl-2 sm:pl-0 leading-relaxed"
             >
               {window.innerWidth < 768
-                ? "Bold visions,\nUnconventional layouts,\nArchitectural storytelling shaping the future."
+                ? "Bold visions,\nUnconventional layouts,\nArchitectural storytelling\nshaping the future."
                 : "Bold visions and unconventional layouts,\nArchitectural storytelling shaping the future."}
             </motion.p>
           )}
