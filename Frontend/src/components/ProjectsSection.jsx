@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from "react";
-<<<<<<< HEAD
+
 import { motion, AnimatePresence } from "framer-motion";
 
 const projects = [
@@ -10,10 +10,10 @@ const projects = [
   { id: 5, name: "Eco Tower", location: "Dubai, UAE", image: "/src/assets/images/im2.jpg", facebookUrl: "#", gallery: ["/src/assets/images/im2.jpg", "/src/assets/images/im1.jpg"] },
   { id: 6, name: "Skyline Villa", location: "Beirut, LB", image: "/src/assets/images/im3.jpg", facebookUrl: "#", gallery: ["/src/assets/images/im3.jpg", "/src/assets/images/im2.jpg"] },
 ];
-=======
+
 import { API_PROJECTS, BACKEND_BASE_URL } from "../../environement/environment";
 import getImageUrl from "../dashboard/utils/imageUrl";
->>>>>>> 70f0344d9aefa64b5af8eb87617d6002e2d5b617
+
 
 const ProjectsSection = () => {
   const [projects, setProjects] = useState([]);
@@ -256,13 +256,13 @@ const ProjectsSection = () => {
                 <div className="flex flex-col gap-6">
                   {selectedProject.gallery.map((img, i) => (<img key={i} src={img} className="w-full rounded-[1.5rem] shadow-md" alt="gallery" />))}
                 </div>
-<<<<<<< HEAD
-=======
+
+
                 <div className="h-1 w-12 bg-green-600 my-6 rounded-full" />
                 <p className="text-gray-500 leading-relaxed text-sm">
                   {selectedProject.description || "We focus on creating spaces that are both functional and inspiring. Each project is a unique journey of design and innovation."}
                 </p>
->>>>>>> 70f0344d9aefa64b5af8eb87617d6002e2d5b617
+
               </div>
               <div className="w-full md:w-1/3 p-10 flex flex-col justify-between bg-white">
                 <div>

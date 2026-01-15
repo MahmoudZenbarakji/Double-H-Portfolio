@@ -174,5 +174,7 @@ app.use((req, res) => {
     path: req.path,
   });
 });
-
+app.listen(process.env.PORT, () => {
+  console.log(`Server is running on port http://localhost:${process.env.PORT}`);
+});
 module.exports = app;
