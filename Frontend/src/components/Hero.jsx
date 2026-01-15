@@ -1,12 +1,15 @@
 // src/components/Hero.jsx
 import { useState, useEffect, useRef } from "react";
 import { motion, AnimatePresence } from "framer-motion";
+import axios from "axios";
+import API_ENDPOINTS from "../dashboard/config/api";
+import getImageUrl from "../dashboard/utils/imageUrl";
 import im1 from "../assets/images/im1.jpg";
 import im2 from "../assets/images/im2.jpg";
 import im3 from "../assets/images/im3.jpg";
 import im4 from "../assets/images/im4.jpg";
 
-const images = [im1, im2, im3, im4];
+const fallbackImages = [im1, im2, im3, im4];
 
 const variants = {
   enter: { opacity: 0, x: -200 },
@@ -17,15 +20,39 @@ const variants = {
 export default function Hero() {
   const [current, setCurrent] = useState(0);
   const [displayed, setDisplayed] = useState("");
-  const [typingDone, setTypingDone] = useState(false); // ✅ جديد
+  const [typingDone, setTypingDone] = useState(false);
+  const [images, setImages] = useState(fallbackImages);
+  const [loading, setLoading] = useState(true);
   const timerRef = useRef(null);
 
   useEffect(() => {
+    // Fetch hero images from API
+    const fetchHeroImages = async () => {
+      try {
+        const response = await axios.get(API_ENDPOINTS.hero.getAll);
+        if (response.data.success && response.data.data.length > 0) {
+          const heroImages = response.data.data.map((hero) => getImageUrl(hero.images));
+          setImages(heroImages);
+        }
+      } catch (error) {
+        console.error("Failed to fetch hero images, using fallback:", error);
+        // Keep fallback images if API fails
+      } finally {
+        setLoading(false);
+      }
+    };
+
+    fetchHeroImages();
+  }, []);
+
+  useEffect(() => {
+    if (images.length === 0) return;
+    
     const interval = setInterval(() => {
       setCurrent((prev) => (prev + 1) % images.length);
     }, 6000);
     return () => clearInterval(interval);
-  }, []);
+  }, [images]);
 
   useEffect(() => {
     const text =
@@ -74,19 +101,30 @@ export default function Hero() {
     >
       {/* خلفية الصور */}
       <div className="absolute inset-0">
-        <AnimatePresence mode="sync">
-          <motion.img
-            key={current}
-            src={images[current]}
-            alt="Architecture background"
-            variants={variants}
-            initial="enter"
-            animate="center"
-            exit="exit"
-            transition={{ duration: 1.5, ease: "easeInOut" }}
-            className="w-full h-full object-cover absolute inset-0"
-          />
-        </AnimatePresence>
+        {!loading && images.length > 0 && (
+          <AnimatePresence mode="sync">
+            <motion.img
+              key={current}
+              src={images[current]}
+              alt="Architecture background"
+              variants={variants}
+              initial="enter"
+              animate="center"
+              exit="exit"
+              transition={{ duration: 1.5, ease: "easeInOut" }}
+              className="w-full h-full object-cover absolute inset-0"
+              onError={(e) => {
+                // Fallback to next image if current fails to load
+                console.error("Image failed to load:", images[current]);
+              }}
+            />
+          </AnimatePresence>
+        )}
+        {loading && (
+          <div className="w-full h-full bg-gray-800 flex items-center justify-center">
+            <div className="text-white text-xl">Loading...</div>
+          </div>
+        )}
       </div>
 
       {/* Overlay هندسي */}

@@ -1,4 +1,5 @@
 import React, { useState, useEffect } from "react";
+<<<<<<< HEAD
 import { motion, AnimatePresence } from "framer-motion";
 
 const projects = [
@@ -9,14 +10,90 @@ const projects = [
   { id: 5, name: "Eco Tower", location: "Dubai, UAE", image: "/src/assets/images/im2.jpg", facebookUrl: "#", gallery: ["/src/assets/images/im2.jpg", "/src/assets/images/im1.jpg"] },
   { id: 6, name: "Skyline Villa", location: "Beirut, LB", image: "/src/assets/images/im3.jpg", facebookUrl: "#", gallery: ["/src/assets/images/im3.jpg", "/src/assets/images/im2.jpg"] },
 ];
+=======
+import { API_PROJECTS, BACKEND_BASE_URL } from "../../environement/environment";
+import getImageUrl from "../dashboard/utils/imageUrl";
+>>>>>>> 70f0344d9aefa64b5af8eb87617d6002e2d5b617
 
 const ProjectsSection = () => {
+  const [projects, setProjects] = useState([]);
+  const [loading, setLoading] = useState(true);
+  const [error, setError] = useState(null);
   const [current, setCurrent] = useState(0);
   const [itemsInView, setItemsInView] = useState(3);
   const [selectedProject, setSelectedProject] = useState(null);
   const [showAll, setShowAll] = useState(false);
 
   const modernFontStyle = { fontFamily: "'Montserrat', sans-serif" };
+
+  // Fetch projects from API
+  useEffect(() => {
+    const fetchProjects = async () => {
+      try {
+        setLoading(true);
+        setError(null);
+        
+        // Make fetch request
+        const response = await fetch(API_PROJECTS, {
+          method: 'GET',
+          headers: {
+            'Content-Type': 'application/json',
+          },
+        });
+        
+        // Log response for debugging
+        if (!response.ok) {
+          const errorText = await response.text();
+          console.error('Projects API Error:', {
+            status: response.status,
+            statusText: response.statusText,
+            url: API_PROJECTS,
+            error: errorText
+          });
+          
+          if (response.status === 401) {
+            throw new Error('Unauthorized: Check API configuration');
+          } else if (response.status === 404) {
+            throw new Error('API endpoint not found');
+          } else {
+            throw new Error(`Failed to fetch projects: ${response.status} ${response.statusText}`);
+          }
+        }
+        
+        const result = await response.json();
+        
+        if (result.success && result.data) {
+          // Map API response to component format
+          const mappedProjects = result.data.map((project) => ({
+            id: project._id,
+            name: project.name,
+            location: project.description || "Location not specified",
+            image: project.images && project.images.length > 0 
+              ? getImageUrl(project.images[0])
+              : "/src/assets/images/im1.jpg",
+            facebookUrl: project.link || "#",
+            gallery: project.images && project.images.length > 0
+              ? project.images.map(img => getImageUrl(img))
+              : ["/src/assets/images/im1.jpg"],
+            description: project.description,
+            date: project.date,
+          }));
+          
+          setProjects(mappedProjects);
+        } else {
+          setProjects([]);
+        }
+      } catch (err) {
+        console.error('Error fetching projects:', err);
+        setError(err.message || 'Failed to load projects');
+        setProjects([]);
+      } finally {
+        setLoading(false);
+      }
+    };
+
+    fetchProjects();
+  }, []);
 
   useEffect(() => {
     const handleResize = () => {
@@ -36,6 +113,50 @@ const ProjectsSection = () => {
   const maxIndex = Math.max(0, projects.length - itemsInView);
   const nextSlide = () => setCurrent((prev) => (prev >= maxIndex ? 0 : prev + 1));
   const prevSlide = () => setCurrent((prev) => (prev <= 0 ? maxIndex : prev - 1));
+
+  // Loading state
+  if (loading) {
+    return (
+      <section
+        id="projects"
+        className="relative w-full min-h-screen bg-[#f8fafc] flex flex-col items-center justify-center py-12 m-0 border-none"
+      >
+        <div className="text-center">
+          <div className="inline-block animate-spin rounded-full h-12 w-12 border-b-2 border-green-600"></div>
+          <p className="mt-4 text-gray-600">Loading projects...</p>
+        </div>
+      </section>
+    );
+  }
+
+  // Error state
+  if (error) {
+    return (
+      <section
+        id="projects"
+        className="relative w-full min-h-screen bg-[#f8fafc] flex flex-col items-center justify-center py-12 m-0 border-none"
+      >
+        <div className="text-center">
+          <p className="text-red-600">Error: {error}</p>
+          <p className="mt-2 text-gray-600">Please try again later.</p>
+        </div>
+      </section>
+    );
+  }
+
+  // No projects state
+  if (projects.length === 0) {
+    return (
+      <section
+        id="projects"
+        className="relative w-full min-h-screen bg-[#f8fafc] flex flex-col items-center justify-center py-12 m-0 border-none"
+      >
+        <div className="text-center">
+          <p className="text-gray-600">No projects available at the moment.</p>
+        </div>
+      </section>
+    );
+  }
 
   return (
     <section
@@ -135,6 +256,13 @@ const ProjectsSection = () => {
                 <div className="flex flex-col gap-6">
                   {selectedProject.gallery.map((img, i) => (<img key={i} src={img} className="w-full rounded-[1.5rem] shadow-md" alt="gallery" />))}
                 </div>
+<<<<<<< HEAD
+=======
+                <div className="h-1 w-12 bg-green-600 my-6 rounded-full" />
+                <p className="text-gray-500 leading-relaxed text-sm">
+                  {selectedProject.description || "We focus on creating spaces that are both functional and inspiring. Each project is a unique journey of design and innovation."}
+                </p>
+>>>>>>> 70f0344d9aefa64b5af8eb87617d6002e2d5b617
               </div>
               <div className="w-full md:w-1/3 p-10 flex flex-col justify-between bg-white">
                 <div>

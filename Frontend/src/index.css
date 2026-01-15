@@ -1,8 +1,23 @@
 @import "tailwindcss";
+<<<<<<< HEAD
 * {
     font-family: 'Inter Tight', sans-serif;
 }
 
+=======
+
+/* Global App Styles */
+* {
+  box-sizing: border-box;
+}
+
+#root {
+  width: 100%;
+  min-height: 100vh;
+}
+
+/* Portfolio Animations */
+>>>>>>> 70f0344d9aefa64b5af8eb87617d6002e2d5b617
 @keyframes borderLoop {
     0% {
         background-position: 0% 50%;
@@ -15,11 +30,7 @@
 .animate-borderLoop {
     background-size: 200% 200%;
     animation: borderLoop 4s linear infinite;
-    /* سرعة أبطأ وواضحة */
 }
-
-
-/* ------------------ */
 
 @keyframes bookOpenRight {
     from {

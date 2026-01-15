@@ -7,7 +7,7 @@ const {
     getProjectById,
     updateProject,
     deleteProject,
-} = require('../controllers/project.controller');
+} = require('../Controllers/project.controller');
 
 const uploadProjectImages = require('../middleware/uploads');
 
@@ -31,6 +31,7 @@ router.post(
     uploadProjectImages.array('images', 10),
     createProject
 );
+
 
 // Update project
 router.put('/:id', updateProject);
